@@ -39,7 +39,7 @@ public class EssayQuestion extends Question {
         this.responseFieldLines = xmlParser.findAndAcceptElementValue("responsefieldlines", 0);
         this.attachmentsAllowed = (xmlParser.findAndAcceptElementValue("attachments", 0) > 0);
         this.attachmentsRequired = (xmlParser.findAndAcceptElementValue("attachmentsrequired", 0) > 0);
-        this.graderInfo = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "graderinfo");
-        this.responseTemplate = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "responsetemplate");
+        this.graderInfo = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "graderinfo", this.getPartialName());
+        this.responseTemplate = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "responsetemplate", this.getPartialName());
     }
 }

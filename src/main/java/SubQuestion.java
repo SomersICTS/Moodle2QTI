@@ -14,9 +14,9 @@ public class SubQuestion {
         if (xmlParser.nextBeginTag("subquestion")) {
             SubQuestion sub = new SubQuestion();
 
-            String format = QuestionBank.parseFormatAttributeFromMXML(xmlParser);
-            sub.text = QuestionBank.parseFormattedTextFromMXML(xmlParser, format);
-            sub.answer = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "answer");
+            String format = QuestionBank.parseFormatAttributeFromMXML(xmlParser, question.getPartialName());
+            sub.text = QuestionBank.parseFormattedTextFromMXML(xmlParser, format, question.getPartialName());
+            sub.answer = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "answer", question.getPartialName());
 
             xmlParser.findAndAcceptEndTag("subquestion");
             return sub;

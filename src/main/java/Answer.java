@@ -22,16 +22,16 @@ public class Answer {
             Answer answer = new Answer();
             answer.question = question;
             answer.correctness = xmlParser.getAttributeValue(null, "fraction", 0.0);
-            String format = QuestionBank.parseFormatAttributeFromMXML(xmlParser);
+            String format = QuestionBank.parseFormatAttributeFromMXML(xmlParser, question.getPartialName());
             xmlParser.nextTag();
-            answer.text = QuestionBank.parseFormattedTextFromMXML(xmlParser, format);
-            answer.feedback = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "feedback");
+            answer.text = QuestionBank.parseFormattedTextFromMXML(xmlParser, format, question.getPartialName());
+            answer.feedback = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "feedback", question.getPartialName());
             answer.tolerance = xmlParser.acceptOptionalElementValue("tolerance", 0.0);
             answer.toleranceType = xmlParser.acceptOptionalElementValue("tolerancetype", 0);
             answer.correctAnswerFormat = xmlParser.acceptOptionalElementValue("correctanswerformat", 0);
             answer.correctAnswerLength = xmlParser.acceptOptionalElementValue("correctanswerlength", 0);
             if (answer.feedback == null) {
-                answer.feedback = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "feedback");
+                answer.feedback = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "feedback", question.getPartialName());
             }
             xmlParser.findAndAcceptEndTag("answer");
             return answer;

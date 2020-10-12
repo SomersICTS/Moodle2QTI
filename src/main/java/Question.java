@@ -53,12 +53,23 @@ public class Question {
     public String getFullName() {
         return this.category.getFullName() + "/" + this.getFlatName();
     }
+    public String getPartialName() {
+        String partialName = this.category.getFullName() + "/" + this.getFlatName();
+        int numFolders = partialName.length() - partialName.replace("/", "").length();
+        if (numFolders > 2) {
+            for (int c = 0; c < numFolders - 2; c++) {
+                partialName = partialName.substring(partialName.indexOf('/')+1);
+            }
+            partialName = ".../" + partialName;
+        }
+        return partialName;
+    }
 
     public void parseSetupFromMXML(XMLParser xmlParser) throws XMLStreamException {
 
-        this.name = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "name");
-        this.questionText = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "questiontext");
-        this.generalFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "generalfeedback");
+        this.name = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "name", "new question");
+        this.questionText = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "questiontext", this.getPartialName());
+        this.generalFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "generalfeedback", this.getPartialName());
         this.defaultGrade = xmlParser.acceptOptionalElementValue("defaultgrade", 1.0);
         this.penalty = xmlParser.acceptOptionalElementValue("penalty", 0.0);
         this.hidden = xmlParser.acceptOptionalElementValue("hidden", 0);
@@ -70,9 +81,9 @@ public class Question {
 
     public void parseFeedbackFromMXML(XMLParser xmlParser) throws XMLStreamException {
 
-        this.correctFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "correctfeedback");
-        this.partiallyCorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "partiallycorrectfeedback");
-        this.incorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "incorrectfeedback");
+        this.correctFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "correctfeedback", this.getPartialName());
+        this.partiallyCorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "partiallycorrectfeedback", this.getPartialName());
+        this.incorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "incorrectfeedback", this.getPartialName());
         this.showNumCorrect = xmlParser.acceptOptionalElementValue("shownumcorrect", false);
     }
 
@@ -165,7 +176,7 @@ public class Question {
         xmlWriter.writeStartElement("div");
         xmlWriter.writeAttribute("class", "rte_zone tveditor1");
         String qtiText = this.resolveFileReferences(textBlock);
-        qtiText = QuestionBank.fixHTMLforQTI21(qtiText);
+        qtiText = QuestionBank.fixHTMLforQTI21(qtiText, this.getPartialName());
         qtiText = qtiText.replace("</p><","</p>\n<");
 
         xmlWriter.writeRawCharacters(qtiText);

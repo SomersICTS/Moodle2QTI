@@ -114,8 +114,8 @@ public class QuestionBank {
     }
 
     private Category parseCategoryFromMXML(XMLParser xmlParser) throws XMLStreamException {
-        String fullName = parseFormattedElementFromMXML(xmlParser, "category");
-        String info = parseFormattedElementFromMXML(xmlParser, "info");
+        String fullName = parseFormattedElementFromMXML(xmlParser, "category", "new category");
+        String info = parseFormattedElementFromMXML(xmlParser, "info", fullName);
         int id = xmlParser.acceptOptionalElementValue("idnumber", 0);
         if (fullName != null) {
             String[] path = fullName.split("/");
@@ -133,117 +133,6 @@ public class QuestionBank {
         System.out.printf("Total %d questions with %d images.\n",
                 totalNum, this.images.size());
         return totalNum;
-    }
-
-    public String parseFormattedElementFromMXML(XMLParser xmlParser, String tag) throws XMLStreamException {
-        xmlParser.findBeginTag(tag);
-        String format = parseFormatAttributeFromMXML(xmlParser);
-        xmlParser.nextTag();
-        String formattedText = parseFormattedTextFromMXML(xmlParser, format);
-        Image image;
-        while ((image = Image.parseMXML(xmlParser, this, formattedText)) != null) {
-            formattedText = formattedText.replace("@@PLUGINFILE@@" + image.getFullURL(), "@@PLUGINFILE@@" + image.getVersionedFullURL());
-        }
-        xmlParser.findAndAcceptEndTag(tag);
-        return formattedText;
-    }
-
-    public static String parseFormatAttributeFromMXML(XMLParser xmlParser) {
-        String format = xmlParser.getAttributeValue(null, "format");
-        if (format != null &&
-                !format.equals("html") &&
-                !format.equals("moodle_auto_format") &&
-                !format.equals("plain_text")
-        ) {
-            SLF4J.LOGGER.error("Ignored unknown text format '{}'", format);
-            return null;
-        }
-        return format;
-    }
-
-    public static String parseFormattedTextFromMXML(XMLParser xmlParser, String format) throws XMLStreamException {
-        String formattedText = xmlParser.findAndAcceptElementValue("text", null);
-        if (format == null || format.equals("html")) {
-            // if (formattedText.startsWith("<![CDATA[") && formattedText.endsWith("]]>")) formattedText = formattedText.substring(9,formattedText.length()-3);
-            formattedText = checkSelfClosingHTMLTag("br", formattedText);
-            formattedText = checkSelfClosingHTMLTag("img", formattedText);
-
-            formattedText = removeHTMLTag("img src=\"https://moodle.informatica.hva.nl/brokenfile.php", formattedText);
-
-            formattedText = checkSrcAttribute(formattedText);
-        }
-        return formattedText;
-    }
-
-    private static String checkSelfClosingHTMLTag(String tag, String text) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
-            i2 = text.indexOf(">", i1);
-            int i3 = text.indexOf("/>", i1);
-            int i4 = text.indexOf("<", i1 + 1);
-            if (i3 >= 0 && i3 < i2) break;
-            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
-                SLF4J.LOGGER.error("HTML syntax error on tag <{}> in '{}'.", tag, text);
-                return text;
-            }
-            text = text.substring(0, i2) + "/" + text.substring(i2);
-        }
-        return text;
-    }
-
-    private static String checkSrcAttribute(String text) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf(" src=\"", i2))) {
-            i2 = text.indexOf("\"", i1 + 6);
-            int i3 = text.indexOf("?time=", i1);
-            if (i3 < 0 || i3 > i2) continue;
-            String errorReference = text.substring(i3, i2);
-            text = text.replace(errorReference, "");
-            SLF4J.LOGGER.warn("Removed parameter '{}' in src attribute of question data.", errorReference);
-            i2 = i3;
-        }
-        return text;
-    }
-
-    public static String removeHTMLTag(String tag, String text) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
-            i2 = text.indexOf(">", i1);
-            int i4 = text.indexOf("<", i1 + 1);
-            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
-                SLF4J.LOGGER.error("Cannot remove tag <{}> in '{}'.", tag, text);
-                return text;
-            }
-            String errorReference = text.substring(i1, i2 + 1);
-            text = text.replace(errorReference, "");
-            SLF4J.LOGGER.warn("Removed tag '{}' in question data.", errorReference);
-        }
-        return text;
-    }
-
-    public static String removeHTMLAttribute(String attribute, String text) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf(" " + attribute + "=\"", i2))) {
-            i2 = text.indexOf("\"", i1 + attribute.length() + 3);
-            String errorReference = text.substring(i1, i2 + 1);
-            text = text.replace(errorReference, " ");
-            SLF4J.LOGGER.warn("Removed attribute '{}' in question data.", errorReference);
-        }
-        return text;
-    }
-
-    public static String fixHTMLforQTI21(String text) {
-        text = text.replace("<u>", "<b>").replace("</u>", "</b>");
-        text = text.replace("<pre>", "<code>").replace("</pre>","</code>");
-        text = text.replace("&nbsp;", " ");
-        text = QuestionBank.removeHTMLAttribute("role", text);
-        text = QuestionBank.removeHTMLAttribute("style", text);
-        text = QuestionBank.removeHTMLAttribute("border", text);
-        return text;
     }
 
     public static String escapeToHTMLEntities(String text) {
@@ -382,6 +271,116 @@ public class QuestionBank {
         for (Image img : this.getImages().values()) {
             img.exportToFile(exportPath);
         }
+    }
 
+    public String parseFormattedElementFromMXML(XMLParser xmlParser, String tag, String context) throws XMLStreamException {
+        xmlParser.findBeginTag(tag);
+        String format = parseFormatAttributeFromMXML(xmlParser, context);
+        xmlParser.nextTag();
+        String formattedText = parseFormattedTextFromMXML(xmlParser, format, context);
+        Image image;
+        while ((image = Image.parseMXML(xmlParser, this, formattedText)) != null) {
+            formattedText = formattedText.replace("@@PLUGINFILE@@" + image.getFullURL(), "@@PLUGINFILE@@" + image.getVersionedFullURL());
+        }
+        xmlParser.findAndAcceptEndTag(tag);
+        return formattedText;
+    }
+
+    public static String parseFormatAttributeFromMXML(XMLParser xmlParser, String context) {
+        String format = xmlParser.getAttributeValue(null, "format");
+        if (format != null &&
+                !format.equals("html") &&
+                !format.equals("moodle_auto_format") &&
+                !format.equals("plain_text")
+        ) {
+            SLF4J.LOGGER.error("Ignored unknown text format '{}' in '{}'", format, context);
+            return null;
+        }
+        return format;
+    }
+
+    public static String parseFormattedTextFromMXML(XMLParser xmlParser, String format, String context) throws XMLStreamException {
+        String formattedText = xmlParser.findAndAcceptElementValue("text", null);
+        if (format == null || format.equals("html")) {
+            // if (formattedText.startsWith("<![CDATA[") && formattedText.endsWith("]]>")) formattedText = formattedText.substring(9,formattedText.length()-3);
+            formattedText = checkSelfClosingHTMLTag("br", formattedText, context);
+            formattedText = checkSelfClosingHTMLTag("img", formattedText, context);
+
+            formattedText = removeHTMLTag("img src=\"https://moodle.informatica.hva.nl/brokenfile.php", formattedText, context);
+
+            formattedText = checkSrcAttribute(formattedText, context);
+        }
+        return formattedText;
+    }
+
+    private static String checkSelfClosingHTMLTag(String tag, String text, String context) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
+            i2 = text.indexOf(">", i1);
+            int i3 = text.indexOf("/>", i1);
+            int i4 = text.indexOf("<", i1 + 1);
+            if (i3 >= 0 && i3 < i2) break;
+            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
+                SLF4J.LOGGER.error("HTML syntax error on tag <{}> in '{}' of '{}'", tag, text, context);
+                return text;
+            }
+            text = text.substring(0, i2) + "/" + text.substring(i2);
+        }
+        return text;
+    }
+
+    private static String checkSrcAttribute(String text, String context) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.toLowerCase().indexOf(" src=\"", i2))) {
+            i2 = text.indexOf("\"", i1 + 6);
+            int i3 = text.indexOf("?time=", i1);
+            if (i3 < 0 || i3 > i2) continue;
+            String errorReference = text.substring(i3, i2);
+            text = text.replace(errorReference, "");
+            SLF4J.LOGGER.warn("Removed parameter '{}' from src attribute in '{}'", errorReference, context);
+            i2 = i3;
+        }
+        return text;
+    }
+
+    public static String removeHTMLTag(String tag, String text, String context) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
+            i2 = text.indexOf(">", i1);
+            int i4 = text.indexOf("<", i1 + 1);
+            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
+                SLF4J.LOGGER.error("Cannot remove tag <{}> from '{}' in '{}'", tag, text, context);
+                return text;
+            }
+            String errorReference = text.substring(i1, i2 + 1);
+            text = text.replace(errorReference, "");
+            SLF4J.LOGGER.warn("Removed tag '{}' from '{}'", errorReference, context);
+        }
+        return text;
+    }
+
+    public static String removeHTMLAttribute(String attribute, String text, String context) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.toLowerCase().indexOf(" " + attribute + "=\"", i2))) {
+            i2 = text.indexOf("\"", i1 + attribute.length() + 3);
+            String errorReference = text.substring(i1, i2 + 1);
+            text = text.replace(errorReference, " ");
+            SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", errorReference, context);
+        }
+        return text;
+    }
+
+    public static String fixHTMLforQTI21(String text, String context) {
+        text = text.replace("<u>", "<b>").replace("</u>", "</b>");
+        text = text.replace("<pre>", "<code>").replace("</pre>","</code>");
+        text = text.replace("&nbsp;", " ");
+        text = removeHTMLAttribute("role", text, context);
+        text = removeHTMLAttribute("style", text, context);
+        text = removeHTMLAttribute("border", text, context);
+        return text;
     }
 }

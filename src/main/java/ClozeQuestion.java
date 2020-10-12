@@ -148,6 +148,17 @@ public class ClozeQuestion extends Question {
                 if (endEntry > 0 && endEntry < endAnswer || endAnswer < 0) {
                     endAnswer = endEntry;
                 }
+                String rawValue = this.questionText.substring(nextAnswer, endAnswer);
+                if (indexOfNonEscaped('*', 0, rawValue) >= 0) {
+                    String flatValue = deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
+                    rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
+                    ClozeAnswer flatCa = new ClozeAnswer();
+                    flatCa.score = ca.score;
+                    flatCa.value = flatValue;
+                    ce.answers.add(flatCa);
+                    SLF4J.LOGGER.debug("Expanded *-wildcard in cloze-entry #{} in question '{}'",
+                            this.clozeEntries.size(), this.getPartialName());
+                }
                 ca.value = deEscape(this.questionText.substring(nextAnswer, endAnswer));
                 ce.answers.add(ca);
                 ce.maxLength = Integer.max(ce.maxLength, ca.value.length());
@@ -159,7 +170,7 @@ public class ClozeQuestion extends Question {
                 nextAnswer++;
             } else {
                 SLF4J.LOGGER.error("Syntax error in cloze-entry #{} in question '{}'",
-                        this.clozeEntries.size(), this.getFullName());
+                        this.clozeEntries.size(), this.getPartialName());
             }
 
             this.questionText = this.questionText.substring(0, nextPosition) +
@@ -170,7 +181,7 @@ public class ClozeQuestion extends Question {
         }
 
         if (this.clozeEntries.size() == 0) {
-            SLF4J.LOGGER.error("No interaction entries found in cloze-question '{}'", this.getFullName());
+            SLF4J.LOGGER.error("No interaction entries found in cloze-question '{}'", this.getPartialName());
         }
     }
 
@@ -268,7 +279,7 @@ public class ClozeQuestion extends Question {
             interactionText = interactionText.replace(String.format("{#%02d}", ceIdx), iaEntry);
         }
 
-        xmlWriter.writeRawCharacters(QuestionBank.fixHTMLforQTI21(interactionText));
+        xmlWriter.writeRawCharacters(QuestionBank.fixHTMLforQTI21(interactionText, this.getPartialName()));
 
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div

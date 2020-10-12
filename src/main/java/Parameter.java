@@ -31,7 +31,7 @@ public class Parameter {
 
     public static Parameter parseFromMXML(XMLParser xmlParser, Question question) throws XMLStreamException {
         if (xmlParser.nextBeginTag("dataset_definition")) {
-            String name = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "name");
+            String name = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "name", question.getPartialName());
             Parameter param = new Parameter(name, question);
             param.type = xmlParser.findAndAcceptElementValue("type", null);
             if (xmlParser.findBeginTag("minimum")) {

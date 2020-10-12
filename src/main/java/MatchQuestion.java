@@ -102,7 +102,7 @@ public class MatchQuestion extends Question {
             if (q.getIdText().isEmpty()) continue;
             xmlWriter.writeStartElement("tr");
             xmlWriter.writeStartElement("td");
-            xmlWriter.writeRawCharacters(QuestionBank.fixHTMLforQTI21(q.getText()));
+            xmlWriter.writeRawCharacters(QuestionBank.fixHTMLforQTI21(q.getText(), this.getPartialName()));
             xmlWriter.writeEndElement(); // td
             xmlWriter.writeStartElement("td");
             xmlWriter.writeStartElement("inlineChoiceInteraction");
