@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129977" title="while-loop" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float">
+    <correctResponse>
+      <value>21</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129977.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_6419" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Bestudeer hetvolgende code snippet:<br /><br />
+        <code>int a = 1;</code><br />
+        <code>while (a % 7 &gt; 0 ) {</code><br />
+        <code>    a += 4;</code><br />
+        <code>}</code><br /><br />
+        Wat is de waarde van <code><strong>a</strong></code> zodra de loop is voltooid ?
+      </div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" />
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

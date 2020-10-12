@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q94232" title="OBJ_16093 4.1 Aantal lijnen in graaf" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="38.0.8985" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>alt_6515</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q94232.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_4666" class="textblock tvblock tvcss_1">
+      <div class="rte_zone frameBody">
+        <p>Wat is het minimum aantal lijnen dat een samenhangende graaf met 8 knopen bevat?</p>
+      </div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <simpleChoice identifier="alt_6515">
+        <div id="textBlockId_2045" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">7</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_2617">
+        <div id="textBlockId_4826" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">8</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_5114">
+        <div id="textBlockId_8623" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">9</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8279">
+        <div id="textBlockId_8815" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">10</div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

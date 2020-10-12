@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q94231" title="OBJ_16091 Kruskal herkennen" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="38.0.8985" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>alt_8090</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q94231.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_3661" class="textblock tvblock tvcss_1">
+      <div class="rte_zone frameBody">
+        <p>Hieronder zie je een stilstaand beeld van de animatie van een algoritme dat een MST van een graaf bepaalt.</p>
+        <p>Welk algoritme is hieronder bezig met het bepalen van de MST?</p>
+        <p>
+          <img alt="mst1" src="mediafiles/mst1.png" width="400" height="290" />
+        </p>
+      </div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <simpleChoice identifier="alt_8090">
+        <div id="textBlockId_7263" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">
+            <p>Kruskal</p>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8118">
+        <div id="textBlockId_6839" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">
+            <p>Dijkstra</p>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_6887">
+        <div id="textBlockId_4925" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">
+            <p>Prim</p>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_1379">
+        <div id="textBlockId_2802" class="textblock tvblock tvcss_1">
+          <div class="rte_zone frameBody">
+            <p>Shortest path first</p>
+          </div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

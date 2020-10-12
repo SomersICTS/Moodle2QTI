@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<imscp:manifest identifier="MANIFEST-QTI-1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:imscp="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_v1p2" xmlns:imsqti="http://www.imsglobal.org/xsd/imsqti_v2p0" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <imscp:organizations />
+  <imscp:resources>
+    <imscp:resource identifier="Q129967" type="imsqti_item_xmlv2p1" href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129967.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q129967</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Intel 8-core I7 HyperThreading</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">2.4</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>choiceInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>38.0.8985</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129967.xml" />
+      <imscp:file href="mediafiles/Intel8CoreI7LayoutEE.png" />
+      <imscp:file href="css/Q129967.css" />
+      <imscp:file href="css/TvEditor.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q129968" type="imsqti_item_xmlv2p1" href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129968.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q129968</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Intel 8-core I7 L2 cache</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">1.4</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>choiceInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>38.0.8985</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129968.xml" />
+      <imscp:file href="mediafiles/Intel8CoreI7LayoutEE.png" />
+      <imscp:file href="css/Q129968.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q129963" type="imsqti_item_xmlv2p1" href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129963.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q129963</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Moore's Law</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">2.0</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>choiceInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>38.0.8985</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129963.xml" />
+      <imscp:file href="css/Q129963.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q129966" type="imsqti_item_xmlv2p1" href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129966.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q129966</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">NUMA architecture</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">2.0</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>choiceInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>38.0.8985</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.a Hardware/Q129966.xml" />
+      <imscp:file href="css/Q129966.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q129969" type="imsqti_item_xmlv2p1" href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.b FLYNN's taxonomy/Q129969.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q129969</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Match with Flynn-1</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">3.0</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>matchInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>38.0.8985</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/Jaar 3/Parallel Computing/Wk1/w1.b FLYNN's taxonomy/Q129969.xml" />
+      <imscp:file href="css/Q129969.css" />
+    </imscp:resource>
+  </imscp:resources>
+</imscp:manifest>

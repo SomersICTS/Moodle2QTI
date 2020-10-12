@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129969" title="Match with Flynn-1" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="38.0.8985" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
+    <correctResponse>
+      <value>alt_1301 match_3332</value>
+      <value>alt_6119 match_3332</value>
+      <value>alt_1237 match_3538</value>
+      <value>alt_5072 match_3850</value>
+      <value>alt_5638 match_3850</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_1301 match_3332" mappedValue="0.16666666666666666" />
+      <mapEntry mapKey="alt_6119 match_3332" mappedValue="0.16666666666666666" />
+      <mapEntry mapKey="alt_1237 match_3538" mappedValue="0.16666666666666666" />
+      <mapEntry mapKey="alt_5072 match_3850" mappedValue="0.16666666666666666" />
+      <mapEntry mapKey="alt_5638 match_3850" mappedValue="0.16666666666666666" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129969.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_7136" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Associate each of the descriptions with the best matching classification as per Flynn's Taxonomy.</div>
+    </div>
+    <matchInteraction responseIdentifier="RESPONSE" shuffle="true" maxAssociations="0">
+      <simpleMatchSet>
+        <simpleAssociableChoice identifier="match_3332" matchMax="5" matchMin="0">
+          <div id="textBlockId_7370" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">SISD</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="match_5672" matchMax="5" matchMin="0">
+          <div id="textBlockId_8860" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">SIMD</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="match_3538" matchMax="5" matchMin="0">
+          <div id="textBlockId_5311" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">MISD</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="match_3850" matchMax="5" matchMin="0">
+          <div id="textBlockId_5694" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">MIMD</div>
+          </div>
+        </simpleAssociableChoice>
+      </simpleMatchSet>
+      <simpleMatchSet>
+        <simpleAssociableChoice identifier="alt_6119" matchMax="0" matchMin="1">
+          <div id="textBlockId_508" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">A classic pendulum clockwork driven by a spring and gear wheels.</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="alt_1301" matchMax="0" matchMin="1">
+          <div id="textBlockId_7175" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">A traffic lights controller.</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="alt_1237" matchMax="0" matchMin="1">
+          <div id="textBlockId_63" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">An mpeg-4 decoder</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="alt_5072" matchMax="0" matchMin="1">
+          <div id="textBlockId_5175" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">A smartphone with an 8-core Snapdragon processor.</div>
+          </div>
+        </simpleAssociableChoice>
+        <simpleAssociableChoice identifier="alt_5638" matchMax="0" matchMin="1">
+          <div id="textBlockId_4153" class="textblock tvblock tvcss_1">
+            <div class="rte_zone tveditor1">The Titan 18688-node supercomputer</div>
+          </div>
+        </simpleAssociableChoice>
+      </simpleMatchSet>
+    </matchInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>

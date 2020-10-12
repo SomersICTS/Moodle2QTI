@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129966" title="NUMA architecture" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="38.0.8985" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>alt_5320</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_5320" mappedValue="0.2" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129966.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_8233" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">What do you know about the NUMA architecture</div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <simpleChoice identifier="alt_5320">
+        <div id="textBlockId_3871" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shares the local memory of each CPU node with all remote CPU nodes</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_102">
+        <div id="textBlockId_2956" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It involves a Remote Method Invocation service to have one CPU access the data of another CPU.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_557">
+        <div id="textBlockId_163" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It replicates data from the local memory of one CPU node into the memory of another CPU node.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_5422">
+        <div id="textBlockId_1469" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It uses a bus structure to shares a single, central memory capacity across multiple CPU nodes.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8603">
+        <div id="textBlockId_1662" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It ensures that all CPU's will experience the same performance from all of the memory.</div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>

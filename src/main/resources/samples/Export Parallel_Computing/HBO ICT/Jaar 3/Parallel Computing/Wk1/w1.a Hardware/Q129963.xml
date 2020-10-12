@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129963" title="Moore's Law" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="38.0.8985" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>alt_5320</value>
+      <value>alt_102</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129963.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_8233" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">What do you know about Moore's Law</div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <simpleChoice identifier="alt_5320">
+        <div id="textBlockId_3871" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shows how the number of transistors on a single chip has doubled every 2 years since 1970.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_102">
+        <div id="textBlockId_2956" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shows how the storage capacity of a memory chip has doubled every 2 years since 1970.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_557">
+        <div id="textBlockId_163" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shows how the maximum clock-frequency of a processor-chip has doubled every 2 years since 1970.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_5422">
+        <div id="textBlockId_1469" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shows how the power dissipation per square mm of a processor chip has doubled every 2 years since 1970.</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8603">
+        <div id="textBlockId_1662" class="textblock tvblock tvcss_1 tvcss_2">
+          <div class="rte_zone tveditor1">It shows how the maximum number of cores per processor chip has doubled every 2 years since 1970.</div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

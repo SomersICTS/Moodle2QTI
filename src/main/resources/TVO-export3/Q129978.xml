@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129978" title="camelcase" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>alt_3368</value>
+      <value>alt_810</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_3368" mappedValue="0.2" />
+      <mapEntry mapKey="alt_810" mappedValue="0.2" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129978.css" type="text/css" />
+  <stylesheet href="css/TvEditor.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_602" class="textblock tvblock tvcss_1 tvcss_2">
+      <div class="rte_zone tveditor1">Welke van onderstaande declaraties gebruiken de 'camelCase' conventie voor namen van variabelen ?</div>
+    </div>
+    <div id="textBlockId_2973" class="textblock tvblock tvcss_1 tvcss_3">
+      <div class="rte_zone tveditor1">
+        <img src="mediafiles/Kameel.jpg" alt="Kameel" class="fr-fic fr-dii tvcss_4" />
+      </div>
+    </div>
+    <div id="textBlockId_5896" class="textblock tvblock tvcss_1 tvcss_5">
+      <div class="rte_zone tveditor1">Kies één of meerdere alternatieven.</div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <simpleChoice identifier="alt_3368">
+        <div id="textBlockId_179" class="textblock tvblock tvcss_1 tvcss_6">
+          <div class="rte_zone tveditor1">
+            <code>int aantalStudenten;</code>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_810">
+        <div id="textBlockId_763" class="textblock tvblock tvcss_1 tvcss_6">
+          <div class="rte_zone tveditor1">
+            <code>int aantal;</code>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_9865">
+        <div id="textBlockId_5274" class="textblock tvblock tvcss_1 tvcss_6">
+          <div class="rte_zone tveditor1">
+            <code>int aantal_studenten;</code>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_2449">
+        <div id="textBlockId_7730" class="textblock tvblock tvcss_1 tvcss_6">
+          <div class="rte_zone tveditor1">
+            <code>int AantalStudenten;</code>
+          </div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_3510">
+        <div id="textBlockId_5794" class="textblock tvblock tvcss_1 tvcss_6">
+          <div class="rte_zone tveditor1">
+            <code>int aantal_Studenten;</code>
+          </div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>
