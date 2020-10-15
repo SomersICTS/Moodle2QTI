@@ -12,12 +12,13 @@ public class MCQuestion extends Question {
     private boolean shuffleAnswers;
     private String answerNumbering;
 
-    private List<Answer> answers = null;
-
     public MCQuestion(Category category) {
         super(category);
+    }
 
-        this.answers = new ArrayList<>();
+    @Override
+    public String getInteractionType() {
+        return QuestionBank.QTI_MC_INTERACTION;
     }
 
     public static Question createFromMXML(XMLParser xmlParser, Category category) throws XMLStreamException {
@@ -31,6 +32,7 @@ public class MCQuestion extends Question {
         return mcQuestion;
     }
 
+    @Override
     public void parseSetupFromMXML(XMLParser xmlParser) throws XMLStreamException {
 
         super.parseSetupFromMXML(xmlParser);
@@ -41,10 +43,7 @@ public class MCQuestion extends Question {
 
         super.parseFeedbackFromMXML(xmlParser);
 
-        Answer answer;
-        while ((answer = Answer.parseFromMXML(xmlParser, this)) != null) {
-            this.answers.add(answer);
-        }
+        super.parseAnswersFromMXML(xmlParser);
     }
 
     @Override
@@ -55,18 +54,40 @@ public class MCQuestion extends Question {
         xmlWriter.writeAttribute("baseType", "identifier");
         xmlWriter.writeStartElement("correctResponse");
         for (Answer a: this.answers) {
-            if (a.getCorrectness() > 0.99) {
+            double correctness = a.getCorrectness();
+            if (correctness > 0) {
+                if (this.singleAnswer) {
+                    if (correctness < Question.PARTIAL_CORRECTNESS) {
+                        SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
+                                correctness, a.getId(), this.getPartialName());
+                        continue;
+                    } else if (correctness < 100) {
+                        SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
+                                correctness, a.getId(), this.getPartialName());
+                    }
+                }
                 xmlWriter.writeStartElement("value");
                 xmlWriter.writeCharacters(a.getId());
                 xmlWriter.writeEndElement();
-            } else if (a.getCorrectness() > 0.01) {
-                SLF4J.LOGGER.error("Partial correctness {} for answer {} on question {} not handled",
-                        a.getCorrectness(), a.getId(), this.getFlatName());
             }
         }
 
         xmlWriter.writeEndElement(); // correctResponse
         xmlWriter.writeEndElement(); // responseDeclaration
+    }
+
+    @Override
+    public void exportQTI21QuestionClosing(XMLWriter xmlWriter) throws XMLStreamException {
+        if (this.singleAnswer) return;
+
+        xmlWriter.writeStartElement("div");
+        xmlWriter.writeAttribute("class", QuestionBank.TV_TBZONE_CLASS + " generated");
+        if (this.getQuestionBank().getLanguage().startsWith("Dut")) {
+            xmlWriter.writeCharacters("(Hieronder mag je één of meerdere antwoorden selecteren.)");
+        } else {
+            xmlWriter.writeCharacters("(Please select one or multiple answers.)");
+        }
+        xmlWriter.writeEndElement(); // div
     }
 
     @Override
@@ -87,6 +108,7 @@ public class MCQuestion extends Question {
     @Override
     public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeEmptyElement("responseProcessing");
-        xmlWriter.writeAttribute("templateLocation", "/templates/RPTEMPLATE_GF.xml");
+        xmlWriter.writeAttribute("templateLocation",
+                this.singleAnswer ? "/templates/RPTEMPLATE_GF.xml" : "/templates/RPTEMPLATE_SCORE.xml");
     }
 }

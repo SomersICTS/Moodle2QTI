@@ -4,7 +4,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class SubQuestion {
 
-    private static int nextId = 30001;
+    private static int nextId = 1001;
 
     private int id = nextId++;
     private String text;
@@ -25,7 +25,10 @@ public class SubQuestion {
     }
 
     public String getIdText() {
-        return "q_" + this.id;
+        return "alt_" + this.id;
+    }
+    public String getAnswerIdText() {
+        return "alt_" + this.id + "_" + (this.id % 10);
     }
 
     public String getText() {

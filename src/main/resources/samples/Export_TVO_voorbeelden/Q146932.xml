@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q146932" title="Mapping, meerdere selectielijstjes" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple">
+    <correctResponse>
+      <value fieldIdentifier="alt_3189" baseType="string">alt_3189_1</value>
+      <value fieldIdentifier="alt_8301" baseType="string">alt_8301_1</value>
+      <value fieldIdentifier="alt_1480" baseType="string">alt_1480_1</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_3189" mappedValue="0.33333333333333331" />
+      <mapEntry mapKey="alt_8301" mappedValue="0.33333333333333331" />
+      <mapEntry mapKey="alt_1480" mappedValue="0.33333333333333331" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q146932.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_8435" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Dit is een mapping vraag:</div>
+    </div>
+    <div class="interactieblok">
+      <div id="textBlockId_8891" class="textblock tvblock tvcss_1">
+        <div class="rte_zone tveditor1">Rood is een primaire kleur:  <inlineChoiceInteraction class="multipleinput" id="alt_3189" responseIdentifier="RESPONSE" shuffle="false" required="true"><inlineChoice identifier="alt_3189_1">Juist</inlineChoice><inlineChoice identifier="alt_3189_2">Onjuist</inlineChoice></inlineChoiceInteraction></div>
+      </div>
+      <div id="textBlockId_9589" class="textblock tvblock tvcss_1">
+        <div class="rte_zone tveditor1">Paars is een primaire kleur:  <inlineChoiceInteraction class="multipleinput" id="alt_8301" responseIdentifier="RESPONSE" shuffle="false" required="true"><inlineChoice identifier="alt_8301_2">Juist</inlineChoice><inlineChoice identifier="alt_8301_1">Onjuist</inlineChoice></inlineChoiceInteraction><br />Wit is een primaire kleur: <inlineChoiceInteraction class="multipleinput" id="alt_1480" responseIdentifier="RESPONSE" shuffle="false" required="true"><inlineChoice identifier="alt_1480_2">Juist</inlineChoice><inlineChoice identifier="alt_1480_1">Onjuist</inlineChoice></inlineChoiceInteraction></div>
+      </div>
+    </div>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>

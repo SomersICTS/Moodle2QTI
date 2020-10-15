@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q136483" title="meer uit meer" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>alt_9746</value>
+      <value>alt_2802</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_9746" mappedValue="0.16666666666666666" />
+      <mapEntry mapKey="alt_2802" mappedValue="0.16666666666666666" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q136483.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_9263" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">meer uit meer vraag</div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <simpleChoice identifier="alt_2802">
+        <div id="textBlockId_830" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">alter een goed</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_7433">
+        <div id="textBlockId_8313" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">alter twee</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_6186">
+        <div id="textBlockId_2505" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">alter drie</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8210">
+        <div id="textBlockId_3702" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">alter vier</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_9746">
+        <div id="textBlockId_27" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">alter vijf goed</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_8629">
+        <div id="textBlockId_3616" class="textblock tvblock">
+          <div class="rte_zone tveditor1"></div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>

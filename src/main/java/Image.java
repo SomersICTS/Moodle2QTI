@@ -83,7 +83,10 @@ public class Image {
             } else if (duplicateImage != null) {
                 return duplicateImage;
             } else if (image.sequenceNr > 1) {
-                SLF4J.LOGGER.info("Duplicate image loaded '{}' with size = {}, data hash = {}",
+                SLF4J.LOGGER.info("Duplicate image '{}' loaded with size = {}, data hash = {}",
+                        image.getVersionedFullName(), image.getSize(), image.getDataHash() );
+            } else {
+                SLF4J.LOGGER.debug("New image '{}' loaded with size = {}, data hash = {}",
                         image.getVersionedFullName(), image.getSize(), image.getDataHash() );
             }
 

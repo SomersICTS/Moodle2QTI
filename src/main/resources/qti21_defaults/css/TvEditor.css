@@ -1,0 +1,565 @@
+/* afname_rte_inhoud.css bevat classes voor de INHOUD  (binnen rte_zone!) van de tekstblokken  */
+/* LET OP: wordt ook gebruikt door afname module */
+
+/* ------------------*/
+/* versie tveditor1  */
+/* oktober 2018      */
+/* ------------------*/
+
+/* STANDAARD ELEMENTEN BINNEN TEKSTBLOKKEN (EN EDITOR) */
+.rte_zone ul, ol {
+	/* color: #333;	 */
+	margin: 0px;
+	padding-left: 18px;
+}
+.rte_zone p {
+	/* color: #333;	 */
+	margin: 0px;
+	padding: 0px;
+	font-family: inherit;	
+	font-size: 100%;
+	font-weight: normal; 
+	padding-bottom: 8px;
+}
+.rte_zone h1 {
+	/* color: #333;	 */
+	margin: 0px;
+	padding: 0px;
+	font-family: inherit;	
+	font-size: 130%;
+  font-weight: bold;
+  padding-bottom: 8px; 
+}
+.rte_zone h2 {
+	/* color: #333;	 */
+	margin: 0px;
+	padding: 0px;
+	font-family: inherit;
+	font-size: 110%;
+  font-weight: bold;
+  padding-bottom: 8px; 
+}
+.rte_zone pre { /* code blokken */
+  background: #F5F2F0;
+  padding: 2px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  min-height: 19px;
+  /* white-space: pre-wrap; */
+  overflow-x: auto; 
+}
+
+/* ------------- */
+/* FROALA EDITOR */
+/* ------------- */
+
+/* -----------------------------------------------------*/
+/* Hieronder komt uit froala_style.css v2.9.0           */
+/* met .fr-view aan het begin vervangen door .rte_zone  */
+/* -----------------------------------------------------*/
+
+/* Let op: er hoort eeen custom theme bij, te genereren vanag de froala website: https://www.froala.com/wysiwyg-editor/customize
+De volgende punten zijn aangepast:
+–	@border-radius: 0px
+–	@selection-bg: #c7f1ef (of iets donkerder #92ebe4)
+–	@ui-color: #02ac9b
+–	@ui-border-color: #413D3C
+–	@seperator-color: mix(@white, #413D3C, 80%)
+--------------------------------------------------------*/
+
+.clearfix::after {
+  clear: both;
+  display: block;
+  content: "";
+  height: 0;
+}
+.hide-by-clipping {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+img.fr-rounded,
+.fr-img-caption.fr-rounded img {
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+img.fr-bordered,
+.fr-img-caption.fr-bordered img {
+  border: solid 5px #CCC;
+}
+img.fr-bordered {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.fr-img-caption.fr-bordered img {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+img.fr-shadow,
+.fr-img-caption.fr-shadow img {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 1px 1px rgba(0, 0, 0, 0.16);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 1px 1px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 1px 1px rgba(0, 0, 0, 0.16);
+}
+.rte_zone {
+  word-wrap: break-word;
+}
+.rte_zone span[style~="color:"] a {
+  color: inherit;
+}
+.rte_zone strong {
+  font-weight: 700;
+}
+.rte_zone table {
+  border: none;
+  border-collapse: collapse;
+  empty-cells: show;
+  max-width: 100%;
+}
+.rte_zone table td {
+  min-width: 5px;
+}
+.rte_zone table.fr-dashed-borders td,
+.rte_zone table.fr-dashed-borders th {
+  border-style: dashed !important;
+}
+.rte_zone table.fr-alternate-rows tbody tr:nth-child(2n) {
+  background: #f5f5f5;
+}
+.rte_zone table td,
+.rte_zone table th {
+  border: 1px solid #dddddd;
+}
+.rte_zone table td:empty,
+.rte_zone table th:empty {
+  height: 20px;
+}
+.rte_zone table td.fr-highlighted,
+.rte_zone table th.fr-highlighted {
+  border: 1px double red;
+}
+.rte_zone table td.fr-thick,
+.rte_zone table th.fr-thick {
+  border-width: 2px;
+}
+.rte_zone table th {
+  background: #e6e6e6;
+}
+.rte_zone hr {
+  clear: both;
+  user-select: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  page-break-after: always;
+}
+.rte_zone .fr-file {
+  position: relative;
+}
+.rte_zone .fr-file::after {
+  position: relative;
+  content: "\1F4CE";
+  font-weight: normal;
+}
+.rte_zone pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: visible;
+}
+.fr-view[dir="rtl"] blockquote {
+  border-left: none;
+  border-right: solid 2px #5e35b1;
+  margin-right: 0;
+  padding-right: 5px;
+  padding-left: 0px;
+}
+.fr-view[dir="rtl"] blockquote blockquote {
+  border-color: #00bcd4;
+}
+.fr-view[dir="rtl"] blockquote blockquote blockquote {
+  border-color: #43a047;
+}
+.rte_zone blockquote {
+  border-left: solid 2px #5e35b1;
+  margin-left: 0;
+  padding-left: 5px;
+  color: #5e35b1;
+}
+.rte_zone blockquote blockquote {
+  border-color: #00bcd4;
+  color: #00bcd4;
+}
+.rte_zone blockquote blockquote blockquote {
+  border-color: #43a047;
+  color: #43a047;
+}
+.rte_zone span.fr-emoticon {
+  font-weight: normal;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+  display: inline;
+  line-height: 0;
+}
+.rte_zone span.fr-emoticon.fr-emoticon-img {
+  background-repeat: no-repeat !important;
+  font-size: inherit;
+  height: 1em;
+  width: 1em;
+  min-height: 20px;
+  min-width: 20px;
+  display: inline-block;
+  margin: -0.1em 0.1em 0.1em;
+  line-height: 1;
+  vertical-align: middle;
+}
+.rte_zone .fr-text-gray {
+  color: #AAA !important;
+}
+.rte_zone .fr-text-bordered {
+  border-top: solid 1px #222;
+  border-bottom: solid 1px #222;
+  padding: 10px 0;
+}
+.rte_zone .fr-text-spaced {
+  letter-spacing: 1px;
+}
+.rte_zone .fr-text-uppercase {
+  text-transform: uppercase;
+}
+.rte_zone .fr-class-highlighted {
+  background-color: #ffff00;
+}
+.rte_zone .fr-class-code {
+  border-color: #cccccc;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background: #f5f5f5;
+  padding: 10px;
+  font-family: "Courier New", Courier, monospace;
+}
+.rte_zone .fr-class-transparency {
+  opacity: 0.5;
+}
+.rte_zone img {
+  position: relative;
+  max-width: 100%;
+}
+.rte_zone img.fr-dib {
+  margin: 5px auto;
+  display: block;
+  float: none;
+  vertical-align: top;
+}
+.rte_zone img.fr-dib.fr-fil {
+  margin-left: 0;
+  text-align: left;
+}
+.rte_zone img.fr-dib.fr-fir {
+  margin-right: 0;
+  text-align: right;
+}
+.rte_zone img.fr-dii {
+  display: inline-block;
+  float: none;
+  vertical-align: bottom;
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: calc(100% - (2 * 5px));
+}
+.rte_zone img.fr-dii.fr-fil {
+  float: left;
+  margin: 5px 5px 5px 0;
+  max-width: calc(100% - 5px);
+}
+.rte_zone img.fr-dii.fr-fir {
+  float: right;
+  margin: 5px 0 5px 5px;
+  max-width: calc(100% - 5px);
+}
+.rte_zone span.fr-img-caption {
+  position: relative;
+  max-width: 100%;
+}
+.rte_zone span.fr-img-caption.fr-dib {
+  margin: 5px auto;
+  display: block;
+  float: none;
+  vertical-align: top;
+}
+.rte_zone span.fr-img-caption.fr-dib.fr-fil {
+  margin-left: 0;
+  text-align: left;
+}
+.rte_zone span.fr-img-caption.fr-dib.fr-fir {
+  margin-right: 0;
+  text-align: right;
+}
+.rte_zone span.fr-img-caption.fr-dii {
+  display: inline-block;
+  float: none;
+  vertical-align: bottom;
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: calc(100% - (2 * 5px));
+}
+.rte_zone span.fr-img-caption.fr-dii.fr-fil {
+  float: left;
+  margin: 5px 5px 5px 0;
+  max-width: calc(100% - 5px);
+}
+.rte_zone span.fr-img-caption.fr-dii.fr-fir {
+  float: right;
+  margin: 5px 0 5px 5px;
+  max-width: calc(100% - 5px);
+}
+.rte_zone .fr-video {
+  text-align: center;
+  position: relative;
+}
+.rte_zone .fr-video.fr-rv {
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.rte_zone .fr-video.fr-rv > iframe,
+.rte_zone .fr-video.fr-rv object,
+.rte_zone .fr-video.fr-rv embed {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.rte_zone .fr-video > * {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  max-width: 100%;
+  border: none;
+}
+.rte_zone .fr-video.fr-dvb {
+  display: block;
+  clear: both;
+}
+.rte_zone .fr-video.fr-dvb.fr-fvl {
+  text-align: left;
+}
+.rte_zone .fr-video.fr-dvb.fr-fvr {
+  text-align: right;
+}
+.rte_zone .fr-video.fr-dvi {
+  display: inline-block;
+}
+.rte_zone .fr-video.fr-dvi.fr-fvl {
+  float: left;
+}
+.rte_zone .fr-video.fr-dvi.fr-fvr {
+  float: right;
+}
+.rte_zone a.fr-strong {
+  font-weight: 700;
+}
+.rte_zone a.fr-green {
+  color: green;
+}
+.rte_zone .fr-img-caption {
+  text-align: center;
+}
+.rte_zone .fr-img-caption .fr-img-wrap {
+  padding: 0px;
+  display: inline-block;
+  margin: auto;
+  text-align: center;
+  width: 100%;
+}
+.rte_zone .fr-img-caption .fr-img-wrap img {
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+.rte_zone .fr-img-caption .fr-img-wrap > span {
+  margin: auto;
+  display: block;
+  padding: 5px 5px 10px;
+  font-size: 14px;
+  font-weight: initial;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-opacity: 0.9;
+  -moz-opacity: 0.9;
+  opacity: 0.9;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  width: 100%;
+  text-align: center;
+}
+.rte_zone button.fr-rounded,
+.rte_zone input.fr-rounded,
+.rte_zone textarea.fr-rounded {
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.rte_zone button.fr-large,
+.rte_zone input.fr-large,
+.rte_zone textarea.fr-large {
+  font-size: 24px;
+}
+/**
+ * Image style.
+ */
+a.fr-view.fr-strong {
+  font-weight: 700;
+}
+a.fr-view.fr-green {
+  color: green;
+}
+/**
+ * Link style.
+ */
+img.rte_zone {
+  position: relative;
+  max-width: 100%;
+}
+img.fr-view.fr-dib {
+  margin: 5px auto;
+  display: block;
+  float: none;
+  vertical-align: top;
+}
+img.fr-view.fr-dib.fr-fil {
+  margin-left: 0;
+  text-align: left;
+}
+img.fr-view.fr-dib.fr-fir {
+  margin-right: 0;
+  text-align: right;
+}
+img.fr-view.fr-dii {
+  display: inline-block;
+  float: none;
+  vertical-align: bottom;
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: calc(100% - (2 * 5px));
+}
+img.fr-view.fr-dii.fr-fil {
+  float: left;
+  margin: 5px 5px 5px 0;
+  max-width: calc(100% - 5px);
+}
+img.fr-view.fr-dii.fr-fir {
+  float: right;
+  margin: 5px 0 5px 5px;
+  max-width: calc(100% - 5px);
+}
+span.fr-img-caption.rte_zone {
+  position: relative;
+  max-width: 100%;
+}
+span.fr-img-caption.fr-view.fr-dib {
+  margin: 5px auto;
+  display: block;
+  float: none;
+  vertical-align: top;
+}
+span.fr-img-caption.fr-view.fr-dib.fr-fil {
+  margin-left: 0;
+  text-align: left;
+}
+span.fr-img-caption.fr-view.fr-dib.fr-fir {
+  margin-right: 0;
+  text-align: right;
+}
+span.fr-img-caption.fr-view.fr-dii {
+  display: inline-block;
+  float: none;
+  vertical-align: bottom;
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: calc(100% - (2 * 5px));
+}
+span.fr-img-caption.fr-view.fr-dii.fr-fil {
+  float: left;
+  margin: 5px 5px 5px 0;
+  max-width: calc(100% - 5px);
+}
+span.fr-img-caption.fr-view.fr-dii.fr-fir {
+  float: right;
+  margin: 5px 0 5px 5px;
+  max-width: calc(100% - 5px);
+}
+/* -------------------------------------------------*/
+/* einde import froala_style.css                    */
+/* -------------------------------------------------*/
+
+/* froala editor inhoud aanpassingen voor overrule froala_style.css */
+.rte_zone .fr-file::after {
+  content: none;  /* opruimen overbodig icon */
+}
+.rte_zone .fr-input-line input {
+  height: auto;
+}
+.rte_zone table {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.rte_zone table td {
+  border: solid 1px #CCC;
+  padding: 3px;
+}
+.rte_zone video {
+  background: #333;
+}
+
+
+/* toegevoegd voor block tonen plaatje (class wordt toegekend via froala) */
+/* blockimage = class die met menu bij image kan worden toegekend */
+.rte_zone img.blockimage {  
+  margin: 5px auto;
+  display: block;
+  float: none;
+  vertical-align: top;
+}
+.rte_zone img.blockimage.fr-fil {
+  margin-left: 0;
+  text-align: left;
+}
+.rte_zone img.blockimage.fr-fir {
+  margin-right: 0;
+  text-align: right;
+}
+
+/* toegevoegd voor border rond ingevoegd plaatje (class wordt toegekend via froala) */
+/* borderimage = class die met menu bij image kan worden toegekend */
+.rte_zone img.borderimage {    
+  border: solid;
+  border-color: #888;
+  padding: 2px;
+}
+.rte_zone img.borderimage {  /* deel 2, hoort hier om interferentie met largeimage te voorkomen */
+  border-width: 2px;
+}
+.rte_zone img.verticalalignimage {
+  vertical-align: middle;
+}

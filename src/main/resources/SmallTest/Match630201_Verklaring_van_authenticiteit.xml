@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<assessmentItem identifier="Match630201" title="Verklaring van authenticiteit" timeDependent="false" adaptive="false" 
+	xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple">
+    <correctResponse>
+      <value fieldIdentifier="q_30055" baseType="string">q_30055</value>
+      <value fieldIdentifier="q_30056" baseType="string">q_30055</value>
+      <value fieldIdentifier="q_30057" baseType="string">q_30055</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="q_30055" mappedValue="0.33333"/>
+      <mapEntry mapKey="q_30056" mappedValue="0.33333"/>
+      <mapEntry mapKey="q_30057" mappedValue="0.33333"/>
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0.0" normalMaximum="0.0"/>
+  <stylesheet href="css/moodle.css" type="text/css"/>
+  <itemBody>
+    <div class="textblock tvblock moodletext">
+      <div class="rte_zone tveditor1"><p>Hieronder verklaar je dat je deze toets maakt volgens de regels van het afname protocol. Dat doe je door alle verklaringen met 'Juist' te bevestigen. Als later blijkt dat je je (mogelijk) niet aan deze regels hebt gehouden zal dat gemeld worden bij de examencommissie met mogelijk verstrekkende gevolgen voor de geldigheid van dit tentamen (ook voor andere studenten) of zelfs voor het vervolg van je studie (ook nadat je cijfer al in SIS is geregistreerd).</p></div>
+    </div>
+    <div class="interactieblok">
+      <div class="textblock tvblock moodletext">
+        <div class="rte_zone tveditor1">
+          <table>
+            <tbody>
+              <tr>
+                <td><p>Ik verklaar dat ik de persoon ben die geregistreerd staat als houder van het account waarmee deze toets wordt gemaakt. Ik maak deze toets namens en voor mezelf.</p></td>
+                <td>
+                  <inlineChoiceInteraction class="multipleinput" id="q_30055" responseIdentifier="RESPONSE" shuffle="false" required="true">
+                    <inlineChoice identifier="q_30059">Hier kan of wil ik niet op antwoorden.</inlineChoice>
+                    <inlineChoice identifier="q_30055">Juist</inlineChoice>
+                    <inlineChoice identifier="q_30058">Onjuist</inlineChoice>
+                  </inlineChoiceInteraction>
+                </td>
+              </tr>
+              <tr>
+                <td><p>Ik verklaar dat ik geen hulp of aanwijzingen van andere personen heb (gehad) bij het maken van deze toets.</p></td>
+                <td>
+                  <inlineChoiceInteraction class="multipleinput" id="q_30056" responseIdentifier="RESPONSE" shuffle="false" required="true">
+                    <inlineChoice identifier="q_30059">Hier kan of wil ik niet op antwoorden.</inlineChoice>
+                    <inlineChoice identifier="q_30055">Juist</inlineChoice>
+                    <inlineChoice identifier="q_30058">Onjuist</inlineChoice>
+                  </inlineChoiceInteraction>
+                </td>
+              </tr>
+              <tr>
+                <td><p>Ik verklaar dat ik geen externe kopieën van vragen, antwoorden of feedback uit de vragenbank van deze toets heb geraadpleegd, heb gemaakt of in mijn bezit heb (gehad) tijdens de afname van deze toets.</p></td>
+                <td>
+                  <inlineChoiceInteraction class="multipleinput" id="q_30057" responseIdentifier="RESPONSE" shuffle="false" required="true">
+                    <inlineChoice identifier="q_30059">Hier kan of wil ik niet op antwoorden.</inlineChoice>
+                    <inlineChoice identifier="q_30055">Juist</inlineChoice>
+                    <inlineChoice identifier="q_30058">Onjuist</inlineChoice>
+                  </inlineChoiceInteraction>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml"/>
+</assessmentItem>

@@ -164,7 +164,11 @@ public class XMLParser extends StreamReaderDelegate {
             String text = this.getElementText();
             this.findAndAcceptEndTag(tag);
             if (!isNullOrEmpty(text))
-                return Double.valueOf(text);
+                try {
+                    return Double.valueOf(text);
+                } catch (NumberFormatException ex) {
+                    return dVal;
+                }
         }
         return dVal;
     }
@@ -173,7 +177,11 @@ public class XMLParser extends StreamReaderDelegate {
             String text = this.getElementText();
             this.findAndAcceptEndTag(tag);
             if (!isNullOrEmpty(text))
-                return Integer.valueOf(text);
+                try {
+                    return Integer.valueOf(text);
+                } catch (NumberFormatException ex) {
+                    return iVal;
+                }
         }
         return iVal;
     }
@@ -182,7 +190,11 @@ public class XMLParser extends StreamReaderDelegate {
             String text = this.getElementText();
             this.findAndAcceptEndTag(tag);
             if (!isNullOrEmpty(text))
-                return Boolean.valueOf(text);
+                try {
+                    return Boolean.valueOf(text);
+                } catch (NumberFormatException ex) {
+                    return bVal;
+                }
         }
         return bVal;
     }

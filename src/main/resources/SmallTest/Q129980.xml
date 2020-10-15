@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q129980" title="findLongestWord" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple">
+    <correctResponse>
+      <value fieldIdentifier="alt_7231" baseType="string">String</value>
+      <value fieldIdentifier="alt_2500" baseType="string">alt_2500_1</value>
+      <value fieldIdentifier="alt_3548" baseType="string">words[i].length()</value>
+      <value fieldIdentifier="alt_3548" baseType="string">words[i].length();</value>
+      <value fieldIdentifier="alt_771" baseType="string">words[i]</value>
+      <value fieldIdentifier="alt_771" baseType="string">words[i];</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_7231" mappedValue="0.25" />
+      <mapEntry mapKey="alt_2500" mappedValue="0.25" />
+      <mapEntry mapKey="alt_3548" mappedValue="0.25" />
+      <mapEntry mapKey="alt_771" mappedValue="0.25" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q129980.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_6301" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Hieronder vind je een Java methode waarmee je het langste woord in een array van woorden kunt bepalen.<br />(Als het array geen woorden bevat, geeft de methode <code><em>null</em></code> als resultaat.)</div>
+    </div>
+    <div id="textBlockId_3368" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Vul de ontbrekende delen aan.</div>
+    </div>
+    <div class="interactieblok">
+      <div id="textBlockId_7391" class="textblock tvblock tvcss_1">
+        <div class="rte_zone tveditor1">
+          <code>public <textEntryInteraction class="multipleinput" id="alt_7231" responseIdentifier="RESPONSE" expectedLength="6" /> findLongestWord(String[] words) {</code>
+          <br />
+          <code>   int longestLength = -1;</code>
+          <br />
+          <code>   String longestWord = null;</code>
+          <br />
+          <br />
+          <code>   for (int i = 0; i &lt; words.length; i++) {</code>
+          <br />
+          <code>      if (words[i].length() <inlineChoiceInteraction class="multipleinput" id="alt_2500" responseIdentifier="RESPONSE" shuffle="false" required="true"><inlineChoice identifier="alt_2500_6">!=</inlineChoice><inlineChoice identifier="alt_2500_1">&gt;</inlineChoice><inlineChoice identifier="alt_2500_2">&lt;</inlineChoice><inlineChoice identifier="alt_2500_4">&lt;&gt;</inlineChoice><inlineChoice identifier="alt_2500_3">&lt;=</inlineChoice><inlineChoice identifier="alt_2500_5">==</inlineChoice></inlineChoiceInteraction> longestLength) {</code>
+          <br />
+          <code>         longestLength = <textEntryInteraction class="multipleinput" id="alt_3548" responseIdentifier="RESPONSE" expectedLength="20" />;</code>
+          <br />
+          <code>         longestWord = <textEntryInteraction class="multipleinput" id="alt_771" responseIdentifier="RESPONSE" expectedLength="20" />;</code>
+          <br />             }<br /><code>   }</code><br /><code>   return longestWord; </code><br /><code>}</code></div>
+      </div>
+    </div>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE.xml" />
+</assessmentItem>

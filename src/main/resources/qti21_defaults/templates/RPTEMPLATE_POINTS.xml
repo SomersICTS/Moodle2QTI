@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<responseProcessing xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+   <!--* Toepassingsprofiel Response Processing Template - POINT voor meervoudig interactietype (grafisch) - Score situatie  - 5 interactie(s) --><!-- == Bestand: RPTEMPLATE_POINT_09.xml == --><setOutcomeValue identifier="SCORE">
+      <sum>
+         <mapResponsePoint identifier="RESPONSE_01"/>
+         <mapResponsePoint identifier="RESPONSE_02"/>
+         <mapResponsePoint identifier="RESPONSE_03"/>
+         <mapResponsePoint identifier="RESPONSE_04"/>
+         <mapResponsePoint identifier="RESPONSE_05"/>
+         <mapResponsePoint identifier="RESPONSE_06"/>
+         <mapResponsePoint identifier="RESPONSE_07"/>
+         <mapResponsePoint identifier="RESPONSE_08"/>
+         <mapResponsePoint identifier="RESPONSE_09"/>
+         <mapResponsePoint identifier="RESPONSE_10"/>
+      </sum>
+   </setOutcomeValue>
+   <!-- == Limit SCORE: == --><responseCondition>
+      <responseIf>
+         <gt>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+         </gt>
+         <setOutcomeValue identifier="SCORE">
+            <baseValue baseType="float">1.0</baseValue>
+         </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+         <lt>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">0.0</baseValue>
+         </lt>
+         <setOutcomeValue identifier="SCORE">
+            <baseValue baseType="float">0.0</baseValue>
+         </setOutcomeValue>
+      </responseElseIf>
+   </responseCondition>
+</responseProcessing>

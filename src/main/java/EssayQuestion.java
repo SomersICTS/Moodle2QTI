@@ -19,6 +19,11 @@ public class EssayQuestion extends Question {
         super(category);
     }
 
+    @Override
+    public String getInteractionType() {
+        return QuestionBank.QTI_SHORTANSWER_INTERACTION;
+    }
+
     public static Question createFromMXML(XMLParser xmlParser, Category category) throws XMLStreamException {
         EssayQuestion essayQuestion = new EssayQuestion(category);
 

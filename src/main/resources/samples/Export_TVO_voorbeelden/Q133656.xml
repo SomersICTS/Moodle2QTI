@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q133656" title="een-uit-meer met plaatje" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>alt_6632</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q133656.css" type="text/css" />
+  <stylesheet href="css/TvEditor.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_9660" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">MC Een-uit-meer vraag 1 uit 4 geen feedback<br /><img src="mediafiles/cs.png" alt="cs" class="fr-fic fr-dii tvcss_2" /></div>
+    </div>
+    <choiceInteraction class="EenKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <simpleChoice identifier="alt_1299">
+        <div id="textBlockId_3390" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">optie een</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_6632">
+        <div id="textBlockId_1528" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">optie twee, goed</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_1260">
+        <div id="textBlockId_9962" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">optie drie</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_22">
+        <div id="textBlockId_5789" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">optie vier</div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

@@ -57,4 +57,16 @@ public class Answer {
     public String getId() {
         return "a_" + this.id;
     }
+
+    public String getText() {
+        return text;
+    }
+
+    public double getTolerance() {
+        return tolerance;
+    }
+
+    public int getToleranceType() {
+        return toleranceType;
+    }
 }

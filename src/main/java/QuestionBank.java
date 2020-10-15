@@ -8,20 +8,54 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class QuestionBank {
 
+    public static final String QTI_DEFAULTS = "qti21_defaults";
+    public static final String QTI_MEDIAFILES = "mediafiles";
+
+    public static final String QTI_TOOL_NAME = "Testvision Online";
+    public static final String QTI_TOOL_VERSION = "41.0.9240";
+
+    public static final String QTI_MC_INTERACTION = "choiceInteraction";
+    public static final String QTI_SHORTANSWER_INTERACTION = "extendedTextInteraction";
+    public static final String QTI_HOTSPOT_INTERACTION = "positionObjectStage";
+    public static final String QTI_MIXED_INTERACTION = "div";
+
+    public static final String TV_TEXTBLOCK_CLASS = "textblock tvblock tvcss_1";
+    public static final String TV_TEXTBLOCK_ID = "textBlockId_";
+    public static final int TV_FIRST_TEXTBLOCK_ID = 101;
+    public static final String TV_TBZONE_CLASS = "rte_zone tveditor1";
+    public static final String TV_INTERACTIONBLOCK_CLASS = "interactieblok";
+
+    public static final String XML_DEFAULT_NAMESPACE = "http://www.imsglobal.org/xsd/imscp_v1p1";
+    public static final String XML_QTI_NAMESPACE = "http://www.imsglobal.org/xsd/imsqti_v2p0";
+    public static final String[] MOODLE_STYLE_SHEETS = { "css/from_moodle.css", "css/TvEditor.css" };
+
     Category rootCategory = new Category("", null, this);
+
+    String language = "unknown";
+
+    public String getLanguage() {
+        return language;
+    }
 
     public Category getCurrentCategory() {
         return currentCategory;
+    }
+
+    private static int nextTextBlockId = TV_FIRST_TEXTBLOCK_ID;
+    public static int getNextTextBlockId() {
+        return nextTextBlockId++;
     }
 
     private Category currentCategory = this.rootCategory;
@@ -47,6 +81,8 @@ public class QuestionBank {
     }
 
     public static QuestionBank loadFromMoodleXMLResource(String resourceName) {
+        System.out.printf("\nStart loading of %s...\n", resourceName);
+
         QuestionBank questionBank = new QuestionBank();
 
         XMLParser xmlParser = new XMLParser(resourceName);
@@ -157,27 +193,55 @@ public class QuestionBank {
         return directoryToBeDeleted.delete();
     }
 
-    public void export(OutputStream output, String format) {
-        exportToQTI21Resource("exportQTI21");
+    private static void copyDirectoryRecursively(String sourcePath, String copyPath) throws IOException {
+        Path sourceDir = Paths.get(sourcePath);
+        Path copyDir = Paths.get(copyPath);
+
+        // Traverse the file tree and copy each file/directory.
+        for (Path path : Files.walk(sourceDir).collect(Collectors.toList())) {
+            Path targetPath = copyDir.resolve(sourceDir.relativize(path));
+            Files.copy(path, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
-    public static final String QTI_MEDIAFILES = "mediafiles";
-    public static final String QTI_CSS = "css/from_moodle.css";
+    private void setLanguage() {
+        int numThe = this.rootCategory.countWords(" the ");
+        int numDe = this.rootCategory.countWords(" de ");
+        int numEen = this.rootCategory.countWords(" een ");
+        if (numDe + numEen > numThe) {
+            this.language = "Dutch";
+        } else {
+            this.language = "English";
+        }
+    }
+    public void export(String format, String exportName) {
+        this.rootCategory = this.rootCategory.findNewRoot();
+        this.setLanguage();
+        exportToQTI21Resource(exportName);
+    }
 
     public void exportToQTI21Resource(String resourceName) {
-        this.rootCategory = this.rootCategory.findNewRoot();
+
+        System.out.printf("Exporting into '%s' (%s) ...\n", resourceName, this.language);
+        nextTextBlockId = TV_FIRST_TEXTBLOCK_ID;
 
         try {
+            String defaultsPath = this.resolveResourcePath(QTI_DEFAULTS);
             String exportPath = this.resolveResourcePath(resourceName);
-            deleteDirectory(new File(exportPath));
             Files.createDirectories(Paths.get(exportPath));
+            deleteDirectory(new File(exportPath));
+            copyDirectoryRecursively(defaultsPath, exportPath);
+
             exportImages(exportPath + "/" + this.rootCategory.getMediaFilesFolder());
             XMLWriter manifest = new XMLWriter(exportPath + "/imsmanifest.xml");
             manifest.writeStartDocument();
             manifest.writeStartElement("manifest");
             manifest.writeAttribute("identifier", "MANIFEST-QTI-1");
             manifest.writeAttribute("\n\txmlns:xml", "http://www.w3.org/XML/1998/namespace");
-            manifest.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imscp_v1p1");
+            //manifest.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imscp_v1p1");
+            //manifest.writeAttribute("\n\txmlns:qti", "http://www.imsglobal.org/xsd/imsqti_v2p0");
+            manifest.writeDefaultNamespace(XML_DEFAULT_NAMESPACE);
+            manifest.writeNamespace("qti", XML_QTI_NAMESPACE);
             manifest.writeEmptyElement("organisations");
             manifest.writeStartElement("resources");
             this.rootCategory.exportQTI21(manifest, exportPath);
@@ -194,6 +258,8 @@ public class QuestionBank {
     private List<String> fileList = null;
 
     public static void zipFolder(String folderPath) {
+        System.out.println("Packaging the .zip file...");
+
         String zipFile = folderPath + ".zip";
         String rootPath = folderPath.substring(0, folderPath.lastIndexOf(File.separator));
         FileOutputStream fos = null;
@@ -283,6 +349,7 @@ public class QuestionBank {
             formattedText = formattedText.replace("@@PLUGINFILE@@" + image.getFullURL(), "@@PLUGINFILE@@" + image.getVersionedFullURL());
         }
         xmlParser.findAndAcceptEndTag(tag);
+
         return formattedText;
     }
 
@@ -301,31 +368,76 @@ public class QuestionBank {
 
     public static String parseFormattedTextFromMXML(XMLParser xmlParser, String format, String context) throws XMLStreamException {
         String formattedText = xmlParser.findAndAcceptElementValue("text", null);
-        if (format == null || format.equals("html")) {
+        //if (format != null && format.equals("moodle_auto_format")) {
+        //    SLF4J.LOGGER.debug("MOODLE_AUTO_FORMAT: '{}' in '{}'", formattedText, context);
+        //}
+        if (format == null ||
+                format.equals("html") //|| format.equals("moodle_auto_format")
+           ) {
             // if (formattedText.startsWith("<![CDATA[") && formattedText.endsWith("]]>")) formattedText = formattedText.substring(9,formattedText.length()-3);
             formattedText = checkSelfClosingHTMLTag("br", formattedText, context);
             formattedText = checkSelfClosingHTMLTag("img", formattedText, context);
 
             formattedText = removeHTMLTag("img src=\"https://moodle.informatica.hva.nl/brokenfile.php", formattedText, context);
-
             formattedText = checkSrcAttribute(formattedText, context);
+
+            // ADS
+            formattedText = removeHTMLTag("style", formattedText, context);
+            formattedText = removeHTMLTag("link", formattedText, context);
+            formattedText = removeHTMLTag("font", formattedText, context);
+            formattedText = removeHTMLTag("o:p", formattedText, context);
+            formattedText = removeHTMLTag("colgroup", formattedText, context);
+            formattedText = removeHTMLTag("col", formattedText, context);
+
+            formattedText = removeInnerTagNesting("table", "p", formattedText, context);
+            //formattedText = removeInnerTagNesting("pre", "p", formattedText, context);
+            formattedText = removeOuterTagNesting("pre", "pre", formattedText, context);
+            formattedText = removeOuterTagNesting("div", "div", formattedText, context);
+            formattedText = removeOuterTagNesting("ol", "p", formattedText, context);
         }
         return formattedText;
     }
 
+    public static String fixPlainTextforQTI21(String text) {
+        text = text.replace("<", "≺");
+        text = text.replace(">", "≻");
+        text = text.replace("&", "\uFF06");
+        return text;
+    }
+
+    public static String fixHTMLforQTI21(String text, String context) {
+        text = text.replace("<u>", "<b>").replace("</u>", "</b>");
+        text = removeOuterTagNesting("p", "p", text, context);
+        //text = text.replace("<pre>", "<code>").replace("</pre>", "</code>");
+        text = text.replace("&nbsp;", " ");
+        text = text.replace("&radic;", "√");
+        text = removeHTMLAttribute("role", text, context);
+        text = removeHTMLAttribute("style", text, context);
+        text = removeHTMLAttribute("border", text, context);
+        text = removeHTMLAttribute("lang", text, context);
+        // from ADS:
+        text = removeHTMLAttribute("valign", text, context);
+        text = removeHTMLAttribute("cellspacing", text, context);
+        text = removeHTMLAttribute("cellpadding", text, context);
+        text = removeHTMLAttribute("bordercolor", text, context);
+        text = removeHTMLAttribute("title", text, context);
+        text = removeHTMLAttribute("frame", text, context);
+        text = removeHTMLAttributeFromTag("width", "td", text, context);
+        text = removeHTMLAttributeFromTag("width", "table", text, context);
+        return text;
+    }
+
     private static String checkSelfClosingHTMLTag(String tag, String text, String context) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
-            i2 = text.indexOf(">", i1);
-            int i3 = text.indexOf("/>", i1);
-            int i4 = text.indexOf("<", i1 + 1);
-            if (i3 >= 0 && i3 < i2) break;
-            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
-                SLF4J.LOGGER.error("HTML syntax error on tag <{}> in '{}' of '{}'", tag, text, context);
-                return text;
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(tag, lcText, nextOpen))) {
+            int closeEnd = findSelfClosingEnd(lcText, nextOpen);
+            int openEnd = lcText.indexOf(">", nextOpen);
+            if (closeEnd < 0) {
+                text = text.substring(0, openEnd) + "/" + text.substring(openEnd);
+                lcText = text.toLowerCase();
             }
-            text = text.substring(0, i2) + "/" + text.substring(i2);
+            nextOpen += tag.length();
         }
         return text;
     }
@@ -345,42 +457,261 @@ public class QuestionBank {
         return text;
     }
 
-    public static String removeHTMLTag(String tag, String text, String context) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf("<" + tag, i2))) {
-            i2 = text.indexOf(">", i1);
-            int i4 = text.indexOf("<", i1 + 1);
-            if (i2 < 0 || (i4 >= 0 && i4 < i2)) {
-                SLF4J.LOGGER.error("Cannot remove tag <{}> from '{}' in '{}'", tag, text, context);
-                return text;
+    public static int countAndFlagInvalidWords(String[] words, String text, String context) {
+        int total = 0;
+        for (String w : words) {
+            int count = countWords(w, text);
+            if (count > 0 && total == 0) {
+                SLF4J.LOGGER.error("Found invalid character(s) '{}' in '{}' of '{}'", w, text, context);
             }
-            String errorReference = text.substring(i1, i2 + 1);
-            text = text.replace(errorReference, "");
-            SLF4J.LOGGER.warn("Removed tag '{}' from '{}'", errorReference, context);
+            total += count;
+        }
+        return total;
+    }
+
+    public static String removeHTMLTag(String tag, String text, String context) {
+        String plainTag = tag.split(" ")[0];
+
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(tag, lcText, nextOpen))) {
+            int endClose = findSelfClosingEnd(lcText, nextOpen);
+            if (endClose < 0) {
+                endClose = findMatchingClosingTagIndex(plainTag, lcText, nextOpen);
+                if (endClose < 0) {
+                    SLF4J.LOGGER.error("Cannot remove tag <{}> from '{}' in '{}'", tag, text, context);
+                    return text;
+                }
+            }
+            SLF4J.LOGGER.warn("Removed tag '{}' from '{}'", text.substring(nextOpen, endClose), context);
+            text = text.substring(0, nextOpen) + text.substring(endClose);
+            lcText = text.toLowerCase();
         }
         return text;
     }
 
     public static String removeHTMLAttribute(String attribute, String text, String context) {
-        int i2 = 0;
-        int i1;
-        while (0 <= (i1 = text.toLowerCase().indexOf(" " + attribute + "=\"", i2))) {
-            i2 = text.indexOf("\"", i1 + attribute.length() + 3);
-            String errorReference = text.substring(i1, i2 + 1);
-            text = text.replace(errorReference, " ");
-            SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", errorReference, context);
+        int nextAttr = 0;
+        while (0 <= (nextAttr = text.toLowerCase().indexOf(" " + attribute + "=\"", nextAttr))) {
+            int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
+            if (endAttr > nextAttr) {
+                SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", text.substring(nextAttr, endAttr + 1), context);
+                text = text.substring(0, nextAttr) + text.substring(endAttr+1);
+            } else {
+                SLF4J.LOGGER.error("Could not isolate attribute '{}' from '{}' in '{}'", attribute, text, context);
+                nextAttr += attribute.length();
+            }
         }
         return text;
     }
 
-    public static String fixHTMLforQTI21(String text, String context) {
-        text = text.replace("<u>", "<b>").replace("</u>", "</b>");
-        text = text.replace("<pre>", "<code>").replace("</pre>","</code>");
-        text = text.replace("&nbsp;", " ");
-        text = removeHTMLAttribute("role", text, context);
-        text = removeHTMLAttribute("style", text, context);
-        text = removeHTMLAttribute("border", text, context);
+    public static String removeHTMLAttributeFromTag(String attribute, String tag, String text, String context) {
+        String openTag = "<" + tag + " ";
+        int nextAttr = 0;
+        while (0 <= (nextAttr = text.toLowerCase().indexOf(" " + attribute + "=\"", nextAttr))) {
+            String prefix = text.substring(0, nextAttr+1).toLowerCase();
+            int prevTag = prefix.lastIndexOf('<');
+            if (prevTag >= 0 && prefix.substring(prevTag).startsWith(openTag)) {
+                int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
+                if (endAttr > nextAttr) {
+                    SLF4J.LOGGER.warn("Removed {}-attribute '{}' from '{}'", tag, text.substring(nextAttr, endAttr + 1), context);
+                    text = text.substring(0, nextAttr) + text.substring(endAttr+1);
+                } else {
+                    SLF4J.LOGGER.error("Could not isolate {}-attribute '{}' from '{}' in '{}'", tag, attribute, text, context);
+                    nextAttr += attribute.length();
+                }
+            } else {
+                nextAttr += attribute.length();
+            }
+        }
         return text;
+    }
+
+    public static int findSelfClosingEnd(String text, int from) {
+        if (text.charAt(from) == '<' && text.charAt(from+1) != '/') {
+            int openEnd = text.indexOf('>', from);
+            int selfClosingEnd = text.indexOf("/>", from);
+            if (selfClosingEnd > from && selfClosingEnd < openEnd) {
+                return selfClosingEnd+2;
+            };
+        }
+        return -1;
+    }
+
+    public static int minimumPositive(int a, int b) {
+        if (a < 0) return b;
+        else if (b < 0) return a;
+        else if (a < b) return a;
+        else return b;
+    }
+    public static int findNextOpenTag(String tag, String text, int from) {
+        int open1 = text.indexOf("<" + tag + ">", from);
+        int open2 = text.indexOf("<" + tag + " ", from);
+        int open3 = text.indexOf("<" + tag + "/>", from);
+        if (open1 < 0) return minimumPositive(open2, open3);
+        else if (open2 < 0) return minimumPositive(open1, open3);
+        else if (open3 < 0) return minimumPositive(open1, open2);
+        else if (open1 < open2) return minimumPositive(open1, open3);
+        else if (open1 < open3) return minimumPositive(open1, open2);
+        else return minimumPositive(open2, open3);
+    }
+    public static String removeTagAt(String text, int from) {
+        if (text.charAt(from) == '<') {
+            int tagEnd = text.indexOf('>', from);
+            if (tagEnd > from) {
+                return text.substring(0, from) + text.substring(tagEnd+1);
+            }
+        }
+        return text;
+    }
+
+    public static int findMatchingClosingTagIndex(String tag, String text, int from) {
+        String openTag = "<" + tag + ">";
+        String openTag1 = "<" + tag + " ";
+        String closeTag = "</" + tag + ">";
+        int selfClosingEnd;
+        if (text.substring(from, from+openTag1.length()).equalsIgnoreCase(openTag1) &&
+            0 <= (selfClosingEnd = findSelfClosingEnd(text, from))) {
+            return selfClosingEnd;
+        }
+
+        int nesting = 1;
+        from += 3;
+        while (nesting > 0) {
+            int nextOpen = findNextOpenTag(tag, text, from);
+
+            int nextClose = text.indexOf(closeTag, from);
+            if (nextOpen >= 0 && (nextOpen < nextClose || nextClose < 0)) {
+                int selfClose = findSelfClosingEnd(text, nextOpen);
+                if (selfClose > nextOpen) {
+                    from = selfClose;
+                } else {
+                    nesting++;
+                    from = nextOpen + 3;
+                }
+            } else if (nextClose >= 0 && (nextClose < nextOpen || nextOpen < 0)) {
+                nesting--;
+                from = nextClose+closeTag.length();
+            } else {
+                return -1;
+            }
+        }
+        return from;
+    }
+
+    private static String removeOuterTagNesting(String oTag, String iTag, String text, String context) {
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(oTag, lcText, nextOpen))) {
+            int endClose = findSelfClosingEnd(lcText, nextOpen);
+            if (endClose < 0) {
+                endClose = findMatchingClosingTagIndex(oTag, lcText, nextOpen);
+                if (endClose < 0) {
+                    SLF4J.LOGGER.error("ROTN: <{}> and </{}> not properly nested in '{}' of '{}'", oTag, oTag, text, context);
+                    return text;
+                } else {
+                    String embeddedText = lcText.substring(nextOpen, endClose);
+                    if (findNextOpenTag(iTag, embeddedText, 3) >= 0) {
+                        // removing outer nesting
+                        text = removeTagAt(text, endClose - (oTag.length() + 3));
+                        text = removeTagAt(text, nextOpen);
+                        lcText = text.toLowerCase();
+                    } else {
+                        nextOpen = endClose;
+                    }
+                }
+            } else {
+                nextOpen = endClose;
+            }
+        }
+
+        return text;
+    }
+
+
+    private static String removeInnerTagNesting(String oTag, String iTag, String text, String context) {
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(oTag, lcText, nextOpen))) {
+            int endClose = findSelfClosingEnd(lcText, nextOpen);
+            if (endClose < 0) {
+                endClose = findMatchingClosingTagIndex(oTag, lcText, nextOpen);
+                if (endClose < 0) {
+                    SLF4J.LOGGER.error("RITN: <{}> and </{}> not properly nested in '{}' of '{}'", oTag, oTag, text, context);
+                    return text;
+                } else {
+                    String embeddedText = text.substring(nextOpen+3, endClose-3);
+                    int nextI = 0;
+                    while ( 0 <= (nextI = findNextOpenTag(iTag, embeddedText.toLowerCase(), nextI))) {
+                        embeddedText = removeTagAt(embeddedText, nextI);
+                    }
+                    nextI = 0;
+                    while ( 0 <= (nextI = embeddedText.toLowerCase().indexOf("</"+iTag+">", nextI))) {
+                        embeddedText = removeTagAt(embeddedText, nextI);
+                    }
+
+                    // replace inner part
+                    text = text.substring(0, nextOpen+3) + embeddedText + text.substring(endClose-3);
+                    lcText = text.toLowerCase();
+                    nextOpen += embeddedText.length() + 6;
+                }
+            } else {
+                nextOpen = endClose;
+            }
+        }
+
+        return text;
+    }
+
+
+    private static String removeInnerTagNesting0(String oTag, String iTag, String text, String context) {
+        String openITag = "<" + iTag + ">";
+        String closeITag = "</" + iTag + ">";
+        String openOTag = "<" + oTag + ">";
+        String closeOTag = "</" + oTag + ">";
+        int nextOOpen = text.indexOf(openOTag);
+        while (nextOOpen >= 0) {
+            int nextOClose = findMatchingClosingTagIndex(oTag, text, nextOOpen+3);
+            if (nextOClose < 0) {
+                SLF4J.LOGGER.error("RITN: {} and {} not properly nested in '{}' of '{}'", openOTag, closeOTag, text, context);
+                text = text.substring(0, nextOOpen) + text.substring(nextOOpen + openOTag.length());
+            } else {
+                String embeddedText = text.substring(nextOOpen + openOTag.length(), nextOClose);
+                embeddedText = embeddedText.replace(openITag,"").replace(closeITag,"");
+                text = text.substring(0, nextOOpen + openOTag.length()) + embeddedText + text.substring(nextOClose);
+                nextOOpen += embeddedText.length() + openOTag.length() + closeOTag.length();
+            }
+
+            nextOOpen = text.indexOf(openOTag, nextOOpen);
+        }
+
+        return text;
+    }
+
+    public static int indexOfNonEscaped(char ch, String s, int from) {
+        int idx = s.indexOf(ch, from);
+        if (idx >= from && idx > 0 && s.charAt(idx - 1) == '\\') {
+            return indexOfNonEscaped(ch, s, idx + 1);
+        }
+        return idx;
+    }
+
+    public static String deEscape(String s) {
+        int backSlash = s.indexOf('\\');
+        while (backSlash >= 0 && backSlash < s.length() - 1) {
+            s = s.substring(0, backSlash) + s.substring(backSlash + 1);
+            backSlash = s.indexOf('\\', backSlash + 1);
+        }
+        return s;
+    }
+
+    public static int countWords(String word, String text) {
+        int numWords = 0;
+        int pos = 0;
+        while (0 <= (pos = text.indexOf(word, pos))) {
+            numWords++;
+            pos += word.length();
+        }
+        return numWords;
     }
 }

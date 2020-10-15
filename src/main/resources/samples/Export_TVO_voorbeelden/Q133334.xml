@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q133334" title="open vraag met plaatje 1" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>het antwoord is correct</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier" />
+  <stylesheet href="css/Q133334.css" type="text/css" />
+  <stylesheet href="css/TvEditor.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_4576" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">open vraag, kort antwoord<img src="mediafiles/DHCPDORA-edit__-__Copy.png" alt="DHCPDORA-edit - Copy" class="fr-fic fr-dii tvcss_2" /></div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" expectedLength="12" />
+  </itemBody>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="ANSWER_CORRECT">
+    <div id="textBlockId_8525" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">goede feedback</div>
+    </div>
+  </modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="FAILURE">
+    <div id="textBlockId_3584" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">foute feedback</div>
+    </div>
+  </modalFeedback>
+</assessmentItem>

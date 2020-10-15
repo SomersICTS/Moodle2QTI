@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q133671" title="invul vraag met plaatje 1" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="string">
+    <correctResponse>
+      <value>geen idee</value>
+      <value>42</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q133671.css" type="text/css" />
+  <stylesheet href="css/TvEditor.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_8225" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Invul vraag met plaatje geen feedback<br /><img src="mediafiles/ddos.png" alt="ddos" class="fr-fic fr-dii tvcss_2" /><br /><br />geef je antwoord:</div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" />
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

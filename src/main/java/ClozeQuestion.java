@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClozeQuestion extends Question {
-    private static int nextClozeEntryId = 80001;
+    private static int nextClozeEntryId = 3001;
 
     private class ClozeAnswer {
         private int id;
@@ -31,16 +31,18 @@ public class ClozeQuestion extends Question {
         }
 
         private String getIdText() {
-            return "ce_" + this.id;
+            return "alt_" + this.id;
         }
         private String getAnswerIdText(int aIdx) {
-            return this.getIdText() + "_a" + aIdx;
+            return this.getIdText() + "_" + aIdx;
         }
         private String getBaseType() {
             if (type.startsWith("nm")) {
-                return "number";
-            } else {
+                return "float";
+            } else if (type.startsWith("sa")) {
                 return "string";
+            } else {
+                return Question.SELECTION_BASETYPE;
             }
         }
     }
@@ -53,6 +55,11 @@ public class ClozeQuestion extends Question {
         super(category);
     }
 
+    @Override
+    public String getInteractionType() {
+        return QuestionBank.QTI_MIXED_INTERACTION;
+    }
+
     public static ClozeQuestion createFromMXML(XMLParser xmlParser, Category category) throws XMLStreamException {
         ClozeQuestion clozeQuestion = new ClozeQuestion(category);
 
@@ -63,23 +70,6 @@ public class ClozeQuestion extends Question {
         SLF4J.LOGGER.debug("Created cloze-question: '{}'", clozeQuestion.name);
 
         return clozeQuestion;
-    }
-
-    private static String deEscape(String s) {
-        int backSlash = s.indexOf('\\');
-        while (backSlash >= 0 && backSlash < s.length() - 1) {
-            s = s.substring(0, backSlash) + s.substring(backSlash + 1);
-            backSlash = s.indexOf('\\', backSlash + 1);
-        }
-        return s;
-    }
-
-    private static int indexOfNonEscaped(char ch, int from, String s) {
-        int idx = s.indexOf(ch, from);
-        if (idx >= from && idx > 0 && s.charAt(idx - 1) == '\\') {
-            return indexOfNonEscaped(ch, idx + 1, s);
-        }
-        return idx;
     }
 
     private static int extractInteger(String s) {
@@ -99,12 +89,12 @@ public class ClozeQuestion extends Question {
     }
 
     private void extractClozeEntries() {
-        int nextPosition = indexOfNonEscaped('{', 0, this.questionText);
+        int nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, 0);
         while (nextPosition >= 0) {
             ClozeEntry ce = new ClozeEntry();
             ce.type = null;
             ce.weight = -1;
-            int nextBrace = indexOfNonEscaped('}', nextPosition + 5, this.questionText);
+            int nextBrace = QuestionBank.indexOfNonEscaped('}', this.questionText, nextPosition + 5);
             int nextColon1 = this.questionText.indexOf(':', nextPosition + 1);
             int nextColon2 = this.questionText.indexOf(':', nextColon1 + 3);
             if (nextColon1 > nextPosition && nextColon2 > nextColon1 && nextBrace > nextColon2) {
@@ -118,7 +108,7 @@ public class ClozeQuestion extends Question {
                 if (ce.type.length() > 4 || ce.type.length() < 2) ce.type = null;
             }
             if (ce.type == null || ce.weight < 0) {
-                nextPosition = indexOfNonEscaped('{', nextPosition+1, this.questionText);
+                nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, nextPosition+1);
                 continue;
             }
 
@@ -143,14 +133,14 @@ public class ClozeQuestion extends Question {
                         }
                     }
                 }
-                int endAnswer = indexOfNonEscaped('~', nextAnswer, this.questionText);
-                int endEntry = indexOfNonEscaped('}', nextAnswer, this.questionText);
+                int endAnswer = QuestionBank.indexOfNonEscaped('~', this.questionText, nextAnswer);
+                int endEntry = QuestionBank.indexOfNonEscaped('}', this.questionText, nextAnswer);
                 if (endEntry > 0 && endEntry < endAnswer || endAnswer < 0) {
                     endAnswer = endEntry;
                 }
                 String rawValue = this.questionText.substring(nextAnswer, endAnswer);
-                if (indexOfNonEscaped('*', 0, rawValue) >= 0) {
-                    String flatValue = deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
+                if (QuestionBank.indexOfNonEscaped('*', rawValue, 0) >= 0) {
+                    String flatValue = QuestionBank.deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*") );
                     rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                     ClozeAnswer flatCa = new ClozeAnswer();
                     flatCa.score = ca.score;
@@ -159,7 +149,7 @@ public class ClozeQuestion extends Question {
                     SLF4J.LOGGER.debug("Expanded *-wildcard in cloze-entry #{} in question '{}'",
                             this.clozeEntries.size(), this.getPartialName());
                 }
-                ca.value = deEscape(this.questionText.substring(nextAnswer, endAnswer));
+                ca.value = QuestionBank.deEscape( rawValue );
                 ce.answers.add(ca);
                 ce.maxLength = Integer.max(ce.maxLength, ca.value.length());
                 nextAnswer = endAnswer;
@@ -177,7 +167,7 @@ public class ClozeQuestion extends Question {
                     String.format("{#%02d}", this.clozeEntries.size()) +
                     this.questionText.substring(nextAnswer);
             this.clozeEntries.add(ce);
-            nextPosition = indexOfNonEscaped('{', nextPosition+5, this.questionText);
+            nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, nextPosition+5);
         }
 
         if (this.clozeEntries.size() == 0) {
@@ -185,18 +175,31 @@ public class ClozeQuestion extends Question {
         }
     }
 
+    private static int findLastClosedTag(String tag, String text) {
+        int lastClosed = 0;
+        int nextOpen = QuestionBank.findNextOpenTag(tag, text, 0);
+        while (nextOpen >= 0) {
+            int nextClosed = QuestionBank.findMatchingClosingTagIndex(tag, text, nextOpen);
+            if (nextClosed < 0) {
+                return nextOpen;
+            }
+            lastClosed = nextClosed;
+            nextOpen = QuestionBank.findNextOpenTag(tag, text, lastClosed);
+        }
+        return lastClosed;
+    }
+
     private void splitInteractionBlock() {
         if (this.clozeEntries.size() == 0) return;
-        int firstCE = this.questionText.indexOf("{#0");
-        int lastPgf = -1;
-        int nextPgf = this.questionText.indexOf("</p>");
-        while (nextPgf >= 0 && nextPgf < firstCE) {
-            lastPgf = nextPgf;
-            nextPgf = this.questionText.indexOf("</p>", lastPgf + 4);
-        }
-        if (lastPgf >= 0) {
-            this.interactionBlock = this.questionText.substring(lastPgf+4);
-            this.questionText = this.questionText.substring(0, lastPgf+4);
+
+        // find a suitable place to split
+        String prefix = this.questionText;
+        int firstTag = this.questionText.indexOf("{#0");
+        prefix = prefix.substring(0, firstTag);
+        firstTag = findLastClosedTag("p", prefix);
+        if (firstTag > 0) {
+            this.interactionBlock = this.questionText.substring(firstTag);
+            this.questionText = this.questionText.substring(0, firstTag);
         } else {
             this.interactionBlock = this.questionText;
             this.questionText = "";
@@ -216,10 +219,10 @@ public class ClozeQuestion extends Question {
                 if (ca.score > 0) {
                     if (ca.score < 50) {
                         SLF4J.LOGGER.warn("Ignoring partial score {} of answer {} in close-entry #{} in question '{}'",
-                                ca.score, ca.value, ceIdx, this.name);
+                                ca.score, ca.value, ceIdx, this.getPartialName());
                     } else if (ca.score < 100) {
                         SLF4J.LOGGER.warn("Upgrading partial score {} of answer {} in close-entry #{} in question '{}'",
-                                ca.score, ca.value, ceIdx, this.name);
+                                ca.score, ca.value, ceIdx, this.getPartialName());
                     }
                 }
                 if (ca.score >= 50) {
@@ -229,7 +232,8 @@ public class ClozeQuestion extends Question {
                     if (ce.type.startsWith("m")) {
                         xmlWriter.writeCharacters(ce.getAnswerIdText(caIdx));
                     } else {
-                        xmlWriter.writeRawCharacters(QuestionBank.escapeToHTMLEntities(ca.value));
+                        //QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, ca.value, this.getPartialName() );
+                        xmlWriter.writeCharacters(ca.value);
                     }
                     xmlWriter.writeEndElement(); // value
                 }
@@ -253,11 +257,12 @@ public class ClozeQuestion extends Question {
         if (this.interactionBlock == null) return;
 
         xmlWriter.writeStartElement("div");
-        xmlWriter.writeAttribute("class", "interactieblok");
+        xmlWriter.writeAttribute("class", QuestionBank.TV_INTERACTIONBLOCK_CLASS);
         xmlWriter.writeStartElement("div");
-        xmlWriter.writeAttribute("class", "textblock tvblock moodletext");
+        xmlWriter.writeAttribute("id", QuestionBank.TV_TEXTBLOCK_ID + QuestionBank.getNextTextBlockId());
+        xmlWriter.writeAttribute("class", QuestionBank.TV_TEXTBLOCK_CLASS + " moodletext");
         xmlWriter.writeStartElement("div");
-        xmlWriter.writeAttribute("class", "rte_zone tveditor1");
+        xmlWriter.writeAttribute("class", QuestionBank.TV_TBZONE_CLASS);
 
         String interactionText = this.interactionBlock;
 
@@ -265,15 +270,21 @@ public class ClozeQuestion extends Question {
             ClozeEntry ce = this.clozeEntries.get(ceIdx);
             String iaEntry;
             if (ce.type.startsWith("m")) {
-                iaEntry = String.format("<inlineChoiceInteraction class=\"multipleinput\" id=\"%s\" responseIdentifier=\"RESPONSE\" shuffle=\"%b\" required=\"true\">",
+                iaEntry = String.format("<inlineChoiceInteraction class='multipleinput' id='%s' responseIdentifier='RESPONSE' shuffle='%b' required='true'>",
+                // iaEntry = String.format("<inlineChoiceInteraction class=\"multipleinput\" id=\"%s\" responseIdentifier=\"RESPONSE\" shuffle=\"%b\" required=\"true\">",
                         ce.getIdText(), ce.type.contains("s"));
                 for (int caIdx = 0; caIdx < ce.answers.size(); caIdx++) {
-                    iaEntry += String.format("<inlineChoice identifier=\"%s\">%s</inlineChoice>",
-                            ce.getAnswerIdText(caIdx), ce.answers.get(caIdx).value);
+                    String aText = QuestionBank.deEscapeHTMLEntities(ce.answers.get(caIdx).value);
+                    aText = QuestionBank.fixPlainTextforQTI21(aText);
+                    // aText = QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, aText, this.getPartialName() );
+                    iaEntry += String.format("<inlineChoice identifier='%s'>%s</inlineChoice>",
+                    // iaEntry += String.format("<inlineChoice identifier=\"%s\">%s</inlineChoice>",
+                            ce.getAnswerIdText(caIdx), aText);
                 }
                 iaEntry += "</inlineChoiceInteraction>";
             } else {
-                iaEntry = String.format("<textEntryInteraction class=\"multipleinput\" id=\"%s\" responseIdentifier=\"RESPONSE\" expectedLength=\"%d\" />",
+                iaEntry = String.format("<textEntryInteraction class='multipleinput' id='%s' responseIdentifier='RESPONSE' expectedLength='%d' />",
+                // iaEntry = String.format("<textEntryInteraction class=\"multipleinput\" id=\"%s\" responseIdentifier=\"RESPONSE\" expectedLength=\"%d\" />",
                         ce.getIdText(), ce.maxLength + 5);
             }
             interactionText = interactionText.replace(String.format("{#%02d}", ceIdx), iaEntry);
@@ -284,11 +295,5 @@ public class ClozeQuestion extends Question {
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div
-    }
-
-    @Override
-    public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
-        xmlWriter.writeEmptyElement("responseProcessing");
-        xmlWriter.writeAttribute("templateLocation", "/templates/RPTEMPLATE_SCORE.xml");
     }
 }

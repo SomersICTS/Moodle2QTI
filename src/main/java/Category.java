@@ -85,6 +85,17 @@ public class Category {
         return numQuestions;
     }
 
+    public int countWords(String word) {
+        int numWords = 0;
+        for (Question q : this.questions) {
+            numWords += QuestionBank.countWords(word, q.getQuestionText().toLowerCase());
+        }
+        for (Category c : this.subCategories) {
+            numWords += c.countWords(word);
+        }
+        return numWords;
+    }
+
     public QuestionBank getQuestionBank() {
         return questionBank;
     }

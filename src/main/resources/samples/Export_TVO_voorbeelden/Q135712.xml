@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q135712" title="numeriek twee alternatieven" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float">
+    <correctResponse>
+      <value>123</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q135712.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_5847" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">dit is een invul_numerieke vraag<ol><li>met opsomlijst a</li><li>optie b</li><li>of 3, c is goed</li></ol><br />en nu antwoorden 122-124 is ok<br />---</div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" />
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

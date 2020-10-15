@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q145908" title="ERD Afmaken" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE_01" cardinality="single" baseType="point">
+    <correctResponse>
+      <value>267 57</value>
+    </correctResponse>
+    <areaMapping defaultValue="0">
+      <areaMapEntry shape="rect" coords="238,26,296,88" mappedValue="0.2" />
+    </areaMapping>
+  </responseDeclaration>
+  <responseDeclaration identifier="RESPONSE_02" cardinality="single" baseType="point">
+    <correctResponse>
+      <value>436 56</value>
+    </correctResponse>
+    <areaMapping defaultValue="0">
+      <areaMapEntry shape="rect" coords="406,26,466,86" mappedValue="0.2" />
+    </areaMapping>
+  </responseDeclaration>
+  <responseDeclaration identifier="RESPONSE_03" cardinality="single" baseType="point">
+    <correctResponse>
+      <value>724 256</value>
+    </correctResponse>
+    <areaMapping defaultValue="0">
+      <areaMapEntry shape="rect" coords="696,232,752,280" mappedValue="0.2" />
+    </areaMapping>
+  </responseDeclaration>
+  <responseDeclaration identifier="RESPONSE_04" cardinality="single" baseType="point">
+    <correctResponse>
+      <value>265 280</value>
+    </correctResponse>
+    <areaMapping defaultValue="0">
+      <areaMapEntry shape="rect" coords="236,250,294,310" mappedValue="0.2" />
+    </areaMapping>
+  </responseDeclaration>
+  <responseDeclaration identifier="RESPONSE_05" cardinality="single" baseType="point">
+    <correctResponse>
+      <value>438 283</value>
+    </correctResponse>
+    <areaMapping defaultValue="0">
+      <areaMapEntry shape="rect" coords="406,254,470,312" mappedValue="0.2" />
+    </areaMapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q145908.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_1575" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Plaats de juiste multipliciteiten op de eindpunten van de relaties</div>
+    </div>
+    <positionObjectStage>
+      <object type="image/png" data="mediafiles/DLO_Curs_Folder_Doc0a_600x363.png" width="884" height="376" class="tvimg">
+        <!--width: 884px; height: 376px;-->
+      </object>
+      <positionObjectInteraction responseIdentifier="RESPONSE_01" maxChoices="1">
+        <object type="image/png" data="mediafiles/Khm0.png" width="30" height="25" class="tvimg">
+          <!--width: 30px; height: 25px;-->
+        </object>
+      </positionObjectInteraction>
+      <positionObjectInteraction responseIdentifier="RESPONSE_02" maxChoices="1">
+        <object type="image/png" data="mediafiles/Kh0m.png" width="30" height="25" class="tvimg">
+          <!--width: 30px; height: 25px;-->
+        </object>
+      </positionObjectInteraction>
+      <positionObjectInteraction responseIdentifier="RESPONSE_03" maxChoices="1">
+        <object type="image/png" data="mediafiles/Kh10.png" width="32" height="26" class="tvimg">
+          <!--width: 32px; height: 26px;-->
+        </object>
+      </positionObjectInteraction>
+      <positionObjectInteraction responseIdentifier="RESPONSE_04" maxChoices="1" label="tbd1">
+        <object type="image/jpeg" class="tv_default_marker" data="mediafiles/hotspotimgexp01.jpg" width="32" height="20" />
+      </positionObjectInteraction>
+      <positionObjectInteraction responseIdentifier="RESPONSE_05" maxChoices="1" label="tbd2">
+        <object type="image/jpeg" class="tv_default_marker" data="mediafiles/hotspotimgexp01.jpg" width="32" height="20" />
+      </positionObjectInteraction>
+    </positionObjectStage>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_POINT_05.xml" />
+</assessmentItem>
