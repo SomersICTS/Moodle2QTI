@@ -64,4 +64,8 @@ public class DragObject {
     public void setResponseNr(int responseNr) {
         this.responseNr = responseNr;
     }
+
+    public int getId() {
+        return id;
+    }
 }

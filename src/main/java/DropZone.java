@@ -73,4 +73,11 @@ public class DropZone {
         this.responseNr = responseNr;
     }
 
+    public void setChoice(int choice) {
+        this.choice = choice;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

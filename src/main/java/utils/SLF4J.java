@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class SLF4J {
     // add VMoption -Dorg.slf4j.simpleLogger.defaultLogLevel=DEBUG to JVM
-    public final static Logger LOGGER = LoggerFactory.getLogger("QuizConverter");
+    public final static Logger LOGGER = LoggerFactory.getLogger("FDMCI_Moodle2Qti");
 
     public static void logException(String message, Exception ex) {
         LOGGER.error(message + " - " + ex.getClass().getName() + ": " + ex.getMessage());

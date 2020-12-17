@@ -779,7 +779,8 @@ public class QuestionBank {
             if (endClose < 0) {
                 endClose = findMatchingClosingTagIndex(oTag, lcText, nextOpen);
                 if (endClose < 0) {
-                    SLF4J.LOGGER.error("ROTN: <{}> and </{}> not properly nested in '{}' of '{}'", oTag, oTag, text, context);
+                    SLF4J.LOGGER.error("ROTN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
+                            oTag, oTag, text, context);
                     return text;
                 } else {
                     String embeddedText = lcText.substring(nextOpen, endClose);
@@ -809,7 +810,8 @@ public class QuestionBank {
             if (endClose < 0) {
                 endClose = findMatchingClosingTagIndex(oTag, lcText, nextOpen);
                 if (endClose < 0) {
-                    SLF4J.LOGGER.error("RITN: <{}> and </{}> not properly nested in '{}' of '{}'", oTag, oTag, text, context);
+                    SLF4J.LOGGER.error("RITN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
+                            oTag, oTag, text, context);
                     return text;
                 } else {
                     String embeddedText = text.substring(nextOpen+3, endClose-3);

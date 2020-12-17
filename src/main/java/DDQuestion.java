@@ -8,14 +8,14 @@ import java.util.*;
 public class DDQuestion extends Question {
 
     protected Image target;
-    protected List<DragObject> dragObjects = null;
-    protected List<DropZone> dropZones = null;
+    protected HashMap<Integer,DragObject> dragObjects = null;
+    protected HashMap<Integer,DropZone> dropZones = null;
 
     public DDQuestion(Category category) {
         super(category);
 
-        this.dragObjects = new ArrayList<>();
-        this.dropZones = new ArrayList<>();
+        this.dragObjects = new HashMap<>();
+        this.dropZones = new HashMap<>();
     }
 
     @Override
@@ -44,39 +44,46 @@ public class DDQuestion extends Question {
 
         DragObject dragObject;
         while ((dragObject = DragObject.parseMXML(xmlParser, this)) != null) {
-            this.dragObjects.add(dragObject);
+            this.dragObjects.put(dragObject.getId(), dragObject);
         }
         DropZone dropZone;
         while ((dropZone = DropZone.parseMXML(xmlParser)) != null) {
-            this.dropZones.add(dropZone);
+            this.dropZones.put(dropZone.getId(), dropZone);
         }
 
         if (this.dragObjects.size() == 0 || this.dropZones.size() == 0) {
             SLF4J.LOGGER.warn("No dragobjects or dropzones found in '{}'", this.getPartialName());
         }
+        for (DropZone dz : this.dropZones.values()) {
+            if (dragObjects.get(dz.getChoice()) == null) {
+                SLF4J.LOGGER.error("Drop zone choice {} not matched by a drag item in '{}'", dz.getChoice(), this.getPartialName());
+                dz.setChoice(0);
+            }
+        }
     }
 
-    private Map<Integer,Integer> dragUsageCount;
+    private Map<Integer,Integer> dragObjectUsageCount;
     private int uniqueZones = 0;
 
     @Override
     public void exportQTI21ResponseDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
-        this.dragUsageCount = new HashMap<>();
-        for (DropZone dz : this.dropZones)
-            this.dragUsageCount.merge(dz.getChoice(), 1, Integer::sum);
+        this.dragObjectUsageCount = new HashMap<>();
+        for (DropZone dz : this.dropZones.values()) {
+            this.dragObjectUsageCount.merge(dz.getChoice(), 1, Integer::sum);
+        }
 
         this.uniqueZones = 0;
 
-        for (DropZone dz : this.dropZones)
-            if (this.dragUsageCount.get(dz.getChoice()) == 1) {
+        for (DropZone dz : this.dropZones.values())
+            if (this.dragObjectUsageCount.get(dz.getChoice()) == 1) {
                 this.uniqueZones++;
                 dz.setResponseNr(this.uniqueZones);
-                this.dragObjects.get(dz.getChoice()-1).setResponseNr(this.uniqueZones);
+                this.dragObjects.get(dz.getChoice()).setResponseNr(this.uniqueZones);
             } else {
                 dz.setResponseNr(0);
             }
 
-        for (DropZone dz : this.dropZones)
+        for (DropZone dz : this.dropZones.values())
             if (dz.getResponseNr() > 0) {
                 dz.exportQTI21ResponseDeclaration(xmlWriter, 1.0, 1.0/this.uniqueZones);
             }
@@ -99,9 +106,9 @@ public class DDQuestion extends Question {
         xmlWriter.writeAttribute("height", "376");
         xmlWriter.writeAttribute("class", "tvimg");
         xmlWriter.writeEndElement(); // object
-        for (DropZone dz : this.dropZones)
+        for (DropZone dz : this.dropZones.values())
             if (dz.getResponseNr() > 0) {
-                DragObject dragObject = this.dragObjects.get(dz.getChoice()-1);
+                DragObject dragObject = this.dragObjects.get(dz.getChoice());
                 dragObject.exportQTI21QuestionChoices(xmlWriter, this);
             }
         xmlWriter.writeEndElement(); // positionObjectStage
