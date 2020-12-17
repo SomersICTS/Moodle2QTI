@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q154155" title="Waar - Nietwaar" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>alt_1706</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q154155.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_3557" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Een static methode moet altijd een return type hebben</div>
+    </div>
+    <choiceInteraction class="DrieKolom" responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <simpleChoice identifier="alt_4606">
+        <div id="textBlockId_579" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">waar</div>
+        </div>
+      </simpleChoice>
+      <simpleChoice identifier="alt_1706">
+        <div id="textBlockId_5347" class="textblock tvblock tvcss_1">
+          <div class="rte_zone tveditor1">niet waar</div>
+        </div>
+      </simpleChoice>
+    </choiceInteraction>
+    <rubricBlock view="testConstructor">
+      <dl>
+        <dt>Studiejaar</dt>
+        <dd>Nieuw</dd>
+        <dt>Taxonomie van Bloom (FDMCI)</dt>
+        <dd>00 Niet toegekend</dd>
+      </dl>
+    </rubricBlock>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

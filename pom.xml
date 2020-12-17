@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nl.hva</groupId>
-    <artifactId>QuizConverter</artifactId>
+    <artifactId>FDMCI_Moodle2Qti</artifactId>
     <version>1.0</version>
 
     <properties>

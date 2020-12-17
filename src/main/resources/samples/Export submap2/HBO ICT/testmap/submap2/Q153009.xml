@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q153009" title="Java procedure met &lt;, &gt; en &amp;&amp; invullen" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple">
+    <correctResponse>
+      <value fieldIdentifier="alt_423" baseType="string">alt_423_1</value>
+      <value fieldIdentifier="alt_8665" baseType="string">&gt;=</value>
+      <value fieldIdentifier="alt_4429" baseType="string">&amp;&amp;</value>
+      <value fieldIdentifier="alt_2002" baseType="string">&lt;</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="alt_423" mappedValue="0.25" />
+      <mapEntry mapKey="alt_8665" mappedValue="0.25" />
+      <mapEntry mapKey="alt_4429" mappedValue="0.25" />
+      <mapEntry mapKey="alt_2002" mappedValue="0.25" />
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier" />
+  <stylesheet href="css/Q153009.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_4979" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Maak deze procedure af:</div>
+    </div>
+    <div class="interactieblok">
+      <div id="textBlockId_3271" class="textblock tvblock tvcss_1">
+        <div class="rte_zone tveditor1">
+          <code>private void inverse(int[] a, int n) {</code>
+          <br />
+          <code>   </code>
+          <code>int [] b = new int[n];<br />   for (i = 0; i <inlineChoiceInteraction class="multipleinput" id="alt_423" responseIdentifier="RESPONSE" shuffle="false" required="true"><inlineChoice identifier="alt_423_5">&amp;&amp;</inlineChoice><inlineChoice identifier="alt_423_4">&gt;</inlineChoice><inlineChoice identifier="alt_423_1">&lt;</inlineChoice><inlineChoice identifier="alt_423_2">&lt;=</inlineChoice><inlineChoice identifier="alt_423_3">==</inlineChoice></inlineChoiceInteraction> a.length; i++) {</code>
+          <code>
+            <br />      if (a[i] <textEntryInteraction class="multipleinput" id="alt_8665" responseIdentifier="RESPONSE" expectedLength="4" /> 0 <textEntryInteraction class="multipleinput" id="alt_4429" responseIdentifier="RESPONSE" expectedLength="4" /> a[i] <textEntryInteraction class="multipleinput" id="alt_2002" responseIdentifier="RESPONSE" expectedLength="4" /> n) b[a[i]] = i;<br />   }</code>
+          <br />
+          <code>}</code>
+        </div>
+      </div>
+    </div>
+    <rubricBlock view="testConstructor">
+      <dl>
+        <dt>Studiejaar</dt>
+        <dd>Nieuw</dd>
+        <dt>Taxonomie van Bloom (FDMCI)</dt>
+        <dd>00 Niet toegekend</dd>
+      </dl>
+    </rubricBlock>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_SCORE_FB1.xml" />
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="ANSWER_CORRECT">
+    <div id="textBlockId_8277" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Goed gedaan</div>
+    </div>
+  </modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="FAILURE">
+    <div id="textBlockId_3681" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Het correct antwoord is xxx</div>
+    </div>
+  </modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="QUESTION_FEEDBACK">
+    <div id="textBlockId_2958" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">deze is een toelichting op de vraag</div>
+    </div>
+  </modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="PARTIAL_CORRECT">
+    <div id="textBlockId_4917" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">half goed</div>
+    </div>
+  </modalFeedback>
+</assessmentItem>

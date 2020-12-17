@@ -11,6 +11,7 @@ public class SubQuestion {
     private String answer;
 
     public static SubQuestion parseFromMXML(XMLParser xmlParser, Question question) throws XMLStreamException {
+
         if (xmlParser.nextBeginTag("subquestion")) {
             SubQuestion sub = new SubQuestion();
 

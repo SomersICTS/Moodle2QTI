@@ -3,16 +3,14 @@ import utils.XMLParser;
 import utils.XMLWriter;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Question {
 
     public static final String SELECTION_BASETYPE = "identifier";
     //public static final String SELECTION_BASETYPE = "string";
     public static final double PARTIAL_CORRECTNESS = 50;
+    public static final int MAX_DEFAULT_GRADE = 5;
     private static final int RESERVED_ID_MIN = 630001;
     private static final int RESERVED_ID_MAX = 639999;
     private static int nextIdNumber = RESERVED_ID_MIN;
@@ -84,6 +82,9 @@ public class Question {
         this.questionText = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "questiontext", this.getPartialName());
         this.generalFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "generalfeedback", this.getPartialName());
         this.defaultGrade = xmlParser.acceptOptionalElementValue("defaultgrade", 1.0);
+        double categoryMark = this.getCategory().getDefaultMark();
+        if (categoryMark > 0) this.defaultGrade = categoryMark;
+
         this.penalty = xmlParser.acceptOptionalElementValue("penalty", 0.0);
         this.hidden = xmlParser.acceptOptionalElementValue("hidden", 0);
         this.idNumber = xmlParser.acceptOptionalElementValue("idnumber", 0);
@@ -105,8 +106,17 @@ public class Question {
     public void parseFeedbackFromMXML(XMLParser xmlParser) throws XMLStreamException {
 
         this.correctFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "correctfeedback", this.getPartialName());
+        if (this.correctFeedback.contains("Your answer is correct.") && this.correctFeedback.length() < (23+10))
+            this.correctFeedback = null;
+
         this.partiallyCorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "partiallycorrectfeedback", this.getPartialName());
+        if (this.partiallyCorrectFeedback.contains("Your answer is partially correct.") && this.partiallyCorrectFeedback.length() < (33+10) )
+            this.partiallyCorrectFeedback = null;
+
         this.incorrectFeedback = this.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "incorrectfeedback", this.getPartialName());
+        if (this.incorrectFeedback.contains("Your answer is incorrect.") && this.incorrectFeedback.length() < (25+10))
+            this.incorrectFeedback = null;
+
         this.showNumCorrect = xmlParser.acceptOptionalElementValue("shownumcorrect", false);
     }
 
@@ -129,12 +139,13 @@ public class Question {
         xmlWriter.writeAttribute("title", this.name);
         xmlWriter.writeAttribute("timeDependent", "false");
         xmlWriter.writeAttribute("adaptive", "false");
-        xmlWriter.writeAttribute("toolName", QuestionBank.QTI_TOOL_NAME);
-        xmlWriter.writeAttribute("toolVersion", QuestionBank.QTI_TOOL_VERSION);
+        //xmlWriter.writeAttribute("toolName", QuestionBank.QTI_TOOL_NAME);
+        //xmlWriter.writeAttribute("toolVersion", QuestionBank.QTI_TOOL_VERSION);
         xmlWriter.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imsqti_v2p1");
 
         this.exportQTI21ResponseDeclaration(xmlWriter);
         this.exportQTI21OutcomeDeclaration(xmlWriter);
+        this.exportQTI21FeedbackOutcomeDeclaration(xmlWriter);
 
         for (String ss : QuestionBank.MOODLE_STYLE_SHEETS) {
             xmlWriter.writeEmptyElement("stylesheet");
@@ -150,9 +161,13 @@ public class Question {
 
         this.exportQTI21QuestionChoices(xmlWriter);
 
+        this.exportQTI21QuestionRubricBlock(xmlWriter);
+
         xmlWriter.writeEndElement(); // itembody
 
         this.exportQTI21ResponseProcessing(xmlWriter);
+
+        this.exportQTI21Feedback(xmlWriter);
 
         xmlWriter.writeEndElement(); // assessmentItem
         xmlWriter.writeEndDocument();
@@ -163,6 +178,7 @@ public class Question {
         manifest.writeAttribute("href", questionPath);
 
         // optional ???
+        /*
         manifest.writeStartElement("metadata");
         manifest.writeStartElement("schema");
         manifest.writeCharacters("MS QTI Item");
@@ -179,6 +195,7 @@ public class Question {
         manifest.writeEndElement();
         manifest.writeEndElement(); // qtiMetaData
         manifest.writeEndElement(); // metadata
+        */
 
         //manifest.writeEmptyElement("file");
         //manifest.writeAttribute("href", "css/from_moodle.css");
@@ -200,6 +217,15 @@ public class Question {
     public void exportQTI21ResponseDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
     }
 
+    private static boolean isNullOrEmpty(String t) {
+        return t == null || t.isEmpty();
+    }
+    private boolean hasFeedback() {
+        return !isNullOrEmpty(this.generalFeedback) ||
+                !isNullOrEmpty(this.correctFeedback) ||
+                !isNullOrEmpty(this.partiallyCorrectFeedback) ||
+                !isNullOrEmpty(this.incorrectFeedback);
+    }
     public void exportQTI21OutcomeDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeEmptyElement("outcomeDeclaration");
         xmlWriter.writeAttribute("identifier", "SCORE");
@@ -207,12 +233,43 @@ public class Question {
         xmlWriter.writeAttribute("baseType", "float");
         xmlWriter.writeAttribute("normalMinimum", "0.0");
         xmlWriter.writeAttribute("normalMaximum", String.valueOf(this.defaultGrade));
-        //xmlWriter.writeEndElement(); // outcomeDeclaration
+    }
+
+    public void exportQTI21FeedbackOutcomeDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
+        if (!this.hasFeedback()) return;
+        xmlWriter.writeEmptyElement("outcomeDeclaration");
+        xmlWriter.writeAttribute("identifier", "FEEDBACK");
+        xmlWriter.writeAttribute("cardinality", "single");
+        xmlWriter.writeAttribute("baseType", "identifier");
     }
 
     public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
-        xmlWriter.writeEmptyElement("responseProcessing");
-        xmlWriter.writeAttribute("templateLocation", "/templates/RPTEMPLATE_SCORE.xml");
+    }
+
+    public void exportQTI21Feedback(XMLWriter xmlWriter) throws XMLStreamException {
+        this.exportQTI21Feedback(xmlWriter, "ANSWER_CORRECT", this.correctFeedback);
+        this.exportQTI21Feedback(xmlWriter, "FAILURE", this.incorrectFeedback);
+        this.exportQTI21Feedback(xmlWriter, "QUESTION_FEEDBACK", this.generalFeedback);
+        this.exportQTI21Feedback(xmlWriter, "PARTIAL_CORRECT", this.partiallyCorrectFeedback);
+    }
+
+    private void exportQTI21Feedback(XMLWriter xmlWriter, String fbKind, String fbText) throws XMLStreamException {
+        if (isNullOrEmpty(fbText)) return;
+        xmlWriter.writeStartElement("modalFeedback");
+        xmlWriter.writeAttribute("outcomeIdentifier", "FEEDBACK");
+        xmlWriter.writeAttribute("showHide", "show");
+        xmlWriter.writeAttribute("identifier", fbKind);
+        xmlWriter.writeStartElement("div");
+        xmlWriter.writeAttribute("id", QuestionBank.TV_TEXTBLOCK_ID + QuestionBank.getNextTextBlockId());
+        xmlWriter.writeAttribute("class", QuestionBank.TV_TEXTBLOCK_CLASS + " moodletext");
+        xmlWriter.writeStartElement("div");
+        xmlWriter.writeAttribute("class", QuestionBank.TV_TBZONE_CLASS);
+        String qtiText = this.resolveFileReferences(fbText);
+        qtiText = QuestionBank.fixHTMLforQTI21(qtiText, this.getPartialName());
+        xmlWriter.writeRawCharacters(qtiText);
+        xmlWriter.writeEndElement(); // div
+        xmlWriter.writeEndElement(); // div
+        xmlWriter.writeEndElement(); // modalFeedback
     }
 
     public void exportQTI21TextBlock(XMLWriter xmlWriter, String textBlock) throws XMLStreamException {
@@ -231,6 +288,22 @@ public class Question {
     }
 
     public void exportQTI21QuestionClosing(XMLWriter xmlWriter) throws XMLStreamException {
+    }
+
+    public void exportQTI21QuestionRubricBlock(XMLWriter xmlWriter) throws XMLStreamException {
+        if (this.name.toLowerCase().contains("[proef]")) {
+            xmlWriter.writeStartElement("rubricBlock");
+            xmlWriter.writeAttribute("view", "testConstructor");
+            xmlWriter.writeStartElement("dl");
+            xmlWriter.writeStartElement("dt");
+            xmlWriter.writeCharacters("Sprints");
+            xmlWriter.writeEndElement(); // dt
+            xmlWriter.writeStartElement("dd");
+            xmlWriter.writeCharacters("Oefentoets");
+            xmlWriter.writeEndElement(); // dd
+            xmlWriter.writeEndElement(); // dl
+            xmlWriter.writeEndElement(); // rubricBlock
+        }
     }
 
     private String resolveFileReferences(String text) {
@@ -253,7 +326,31 @@ public class Question {
     }
 
     public void exportQTI21QuestionChoices(XMLWriter xmlWriter) throws XMLStreamException {
+    }
 
+    public void registerScore(Map<String,int[]> scoresCounts) {
+        String type = this.getQuestionType();
+        int score = (int)this.defaultGrade;
+        if (Math.abs(this.defaultGrade - score) > 0.1)
+            SLF4J.LOGGER.warn("Non-integer grade {} in '{}'", this.defaultGrade, this.getPartialName());
+
+        if (score >= 0 && score <= MAX_DEFAULT_GRADE) {
+            int[] scores = scoresCounts.get(type);
+            if (scores == null) {
+                scores = new int[MAX_DEFAULT_GRADE+1];
+                scoresCounts.put(type, scores);
+            }
+            scores[score]++;
+        }
+    }
+
+    public void registerDeviatingScore(Map<String,Integer> defaultScores, List<String> deviations) {
+        String type = this.getQuestionType();
+        int score = (int)this.defaultGrade;
+
+        if (score >= 0 && score <= MAX_DEFAULT_GRADE && score != defaultScores.get(type)) {
+            deviations.add(this.getPartialName());
+        }
     }
 
     public String getFlatName() {

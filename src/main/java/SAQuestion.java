@@ -90,6 +90,7 @@ public class SAQuestion extends Question {
         xmlWriter.writeAttribute("cardinality", this.expandedAnswers.size() > 1 ? "multiple" : "single" );
         xmlWriter.writeAttribute("baseType", baseType);
         xmlWriter.writeStartElement("correctResponse");
+        //xmlWriter.writeAttribute("interpretation", "caseSensitive");
         for (String aText: this.expandedAnswers) {
             xmlWriter.writeStartElement("value");
             // QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, aText, this.getPartialName() );

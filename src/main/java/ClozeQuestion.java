@@ -296,4 +296,9 @@ public class ClozeQuestion extends Question {
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div
     }
+
+    public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeEmptyElement("responseProcessing");
+        xmlWriter.writeAttribute("templateLocation", "/templates/RPTEMPLATE_SCORE.xml");
+    }
 }

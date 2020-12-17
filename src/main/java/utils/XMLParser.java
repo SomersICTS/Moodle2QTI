@@ -115,37 +115,26 @@ public class XMLParser extends StreamReaderDelegate {
 
     public String findAndAcceptElementValue(String tag, String sVal) throws XMLStreamException {
         if (this.findBeginTag(tag)) {
-            String text = this.getElementText();
-            this.findAndAcceptEndTag(tag);
-            return text;
+            return acceptOptionalElementValue(tag, sVal);
         }
         return sVal;
     }
 
     public double findAndAcceptElementValue(String tag, double dVal) throws XMLStreamException {
         if (this.findBeginTag(tag)) {
-            String text = this.getElementText();
-            this.findAndAcceptEndTag(tag);
-            if (!isNullOrEmpty(text))
-                return Double.valueOf(text);
+            return acceptOptionalElementValue(tag, dVal);
         }
         return dVal;
     }
     public int findAndAcceptElementValue(String tag, int iVal) throws XMLStreamException {
         if (this.findBeginTag(tag)) {
-            String text = this.getElementText();
-            this.findAndAcceptEndTag(tag);
-            if (!isNullOrEmpty(text))
-                return Integer.valueOf(text);
+            return acceptOptionalElementValue(tag, iVal);
         }
         return iVal;
     }
     public boolean findAndAcceptElementValue(String tag, boolean bVal) throws XMLStreamException {
         if (this.findBeginTag(tag)) {
-            String text = this.getElementText();
-            this.findAndAcceptEndTag(tag);
-            if (!isNullOrEmpty(text))
-                return Boolean.valueOf(text);
+            return acceptOptionalElementValue(tag, bVal);
         }
         return bVal;
     }

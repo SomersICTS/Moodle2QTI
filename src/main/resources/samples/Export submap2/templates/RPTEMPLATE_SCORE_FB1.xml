@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<responseProcessing xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <!--* Toepassingsprofiel Response Processing Template - Score situatie + Enkele feedback -->
+  <responseCondition>
+    <responseIf>
+      <isNull>
+        <variable identifier="RESPONSE"/>
+      </isNull>
+      <setOutcomeValue identifier="SCORE">
+        <baseValue baseType="float">0.0</baseValue>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="FEEDBACK">
+        <baseValue baseType="identifier">FAILURE</baseValue>
+      </setOutcomeValue>
+    </responseIf>
+    <responseElse>
+      <setOutcomeValue identifier="SCORE">
+        <mapResponse identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <responseCondition>
+        <responseIf>
+          <gte>
+            <variable identifier="SCORE"/>
+            <variable identifier="FEEDBACK_TRESHOLD"/>
+          </gte>
+          <setOutcomeValue identifier="FEEDBACK">
+            <baseValue baseType="identifier">ANSWER_CORRECT</baseValue>
+          </setOutcomeValue>
+        </responseIf>
+        <responseElse>
+          <setOutcomeValue identifier="FEEDBACK">
+            <baseValue baseType="identifier">FAILURE</baseValue>
+          </setOutcomeValue>
+        </responseElse>
+      </responseCondition>
+    </responseElse>
+  </responseCondition>
+</responseProcessing>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q152863" title="Morgan's Law met &lt; &gt; en &amp;" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="41.0.9240" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="string">
+    <correctResponse>
+      <value>i &gt;= 0 &amp;&amp; i &lt; N</value>
+      <value>(i &gt;= 0 &amp;&amp; i &lt; N)</value>
+      <value>(i &gt;= 0) &amp;&amp; (i &lt; N)</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q152863.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_2705" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">In een programma vind je:<br /><code><br />   if ( !(i &lt; 0 || i &gt;= N) ) {<br />      a[i] = 0;<br />   }<br /></code><br />Geef met behulp van 'De Morgan's Law' een eenvoudigere vorm voor de expressie<br /><br /><code>   !(i &lt; 0 || i &gt;= N)   </code><code>    </code></div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" />
+    <rubricBlock view="testConstructor">
+      <dl>
+        <dt>Studiejaar</dt>
+        <dd>Nieuw</dd>
+        <dt>Taxonomie van Bloom (FDMCI)</dt>
+        <dd>00 Niet toegekend</dd>
+      </dl>
+    </rubricBlock>
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

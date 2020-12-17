@@ -53,6 +53,7 @@ public class MCQuestion extends Question {
         xmlWriter.writeAttribute("cardinality", this.singleAnswer ? "single" : "multiple");
         xmlWriter.writeAttribute("baseType", "identifier");
         xmlWriter.writeStartElement("correctResponse");
+        int numCorrectAnswers = 0;
         for (Answer a: this.answers) {
             double correctness = a.getCorrectness();
             if (correctness > 0) {
@@ -66,13 +67,28 @@ public class MCQuestion extends Question {
                                 correctness, a.getId(), this.getPartialName());
                     }
                 }
+                numCorrectAnswers++;
                 xmlWriter.writeStartElement("value");
                 xmlWriter.writeCharacters(a.getId());
                 xmlWriter.writeEndElement();
             }
         }
-
         xmlWriter.writeEndElement(); // correctResponse
+
+        if (!this.singleAnswer) {
+            xmlWriter.writeStartElement("mapping");
+            xmlWriter.writeAttribute("defaultValue", "0");
+            String mappedValue = String.valueOf(1.0 * numCorrectAnswers / this.answers.size());
+            for (Answer a: this.answers) {
+                if (a.getCorrectness() > 0) {
+                    xmlWriter.writeEmptyElement("mapEntry");
+                    xmlWriter.writeAttribute("mapKey", a.getId());
+                    xmlWriter.writeAttribute("mappedValue", mappedValue);
+                }
+            }
+            xmlWriter.writeEndElement(); // mapping
+        }
+
         xmlWriter.writeEndElement(); // responseDeclaration
     }
 
@@ -83,7 +99,7 @@ public class MCQuestion extends Question {
         xmlWriter.writeStartElement("div");
         xmlWriter.writeAttribute("class", QuestionBank.TV_TBZONE_CLASS + " generated");
         if (this.getQuestionBank().getLanguage().startsWith("Dut")) {
-            xmlWriter.writeCharacters("(Hieronder mag je één of meerdere antwoorden selecteren.)");
+            xmlWriter.writeCharacters("(Hieronder mag je een of meerdere antwoorden selecteren.)");
         } else {
             xmlWriter.writeCharacters("(Please select one or multiple answers.)");
         }

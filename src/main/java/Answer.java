@@ -1,3 +1,4 @@
+import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;
 
@@ -42,7 +43,25 @@ public class Answer {
     public void exportQTI21Alternative(XMLWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeStartElement("simpleChoice");
         xmlWriter.writeAttribute("identifier", this.getId());
+
         this.question.exportQTI21TextBlock(xmlWriter, this.text);
+        xmlWriter.writeEndElement(); // simpleChoice
+    }
+
+    public void exportQTI21TrueFalseAlternative(XMLWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeStartElement("simpleChoice");
+        xmlWriter.writeAttribute("identifier", this.getId());
+        String aText = this.text.toLowerCase();
+        boolean isTrue = aText.contains("true");
+        boolean isFalse = aText.contains("false");
+        if (isTrue == isFalse) {
+            SLF4J.LOGGER.error("Alternative {} not suitable for True/False-question {}", this.text, this.question.getPartialName());
+        }
+        if (this.question.getQuestionBank().getLanguage().startsWith("Dut")) {
+            this.question.exportQTI21TextBlock(xmlWriter, isTrue ? "Juist" : "Onjuist");
+        } else {
+            this.question.exportQTI21TextBlock(xmlWriter, isTrue ? "True" : "False");
+        }
         xmlWriter.writeEndElement(); // simpleChoice
     }
 

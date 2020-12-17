@@ -147,5 +147,10 @@ public class MatchQuestion extends Question {
         xmlWriter.writeEndElement(); // div textblock
         xmlWriter.writeEndElement(); // div interactionblock
     }
+
+    public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
+        xmlWriter.writeEmptyElement("responseProcessing");
+        xmlWriter.writeAttribute("templateLocation", "/templates/RPTEMPLATE_SCORE.xml");
+    }
 }
 

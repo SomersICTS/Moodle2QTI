@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<imscp:manifest identifier="MANIFEST-QTI-1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:imscp="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_v1p2" xmlns:imsqti="http://www.imsglobal.org/xsd/imsqti_v2p0" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <imscp:organizations />
+  <imscp:resources>
+    <imscp:resource identifier="Q153009" type="imsqti_item_xmlv2p1" href="HBO ICT/testmap/submap2/Q153009.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q153009</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Java procedure met &lt;, &gt; en &amp;&amp; invullen</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">1.1</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>div</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>41.0.9240</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/testmap/submap2/Q153009.xml" />
+      <imscp:file href="css/Q153009.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q146932" type="imsqti_item_xmlv2p1" href="HBO ICT/testmap/submap2/Q146932.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q146932</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Mapping, meerdere selectielijstjes</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">1.1</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>div</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>41.0.9240</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/testmap/submap2/Q146932.xml" />
+      <imscp:file href="css/Q146932.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q152863" type="imsqti_item_xmlv2p1" href="HBO ICT/testmap/submap2/Q152863.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q152863</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Morgan's Law met &lt; &gt; en &amp;</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">1.0</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>extendedTextInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>41.0.9240</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/testmap/submap2/Q152863.xml" />
+      <imscp:file href="css/Q152863.css" />
+    </imscp:resource>
+    <imscp:resource identifier="Q154155" type="imsqti_item_xmlv2p1" href="HBO ICT/testmap/submap2/Q154155.xml">
+      <imscp:metadata>
+        <imscp:schema>MS QTI Item</imscp:schema>
+        <imscp:schemaversion>2.0</imscp:schemaversion>
+        <imsmd:lom>
+          <imsmd:general>
+            <imsmd:identifier>Q154155</imsmd:identifier>
+            <imsmd:title>
+              <imsmd:langstring xml:lang="nl">Waar - Nietwaar</imsmd:langstring>
+            </imsmd:title>
+          </imsmd:general>
+          <imsmd:lifecycle>
+            <imsmd:version>
+              <imsmd:langstring xml:lang="x-none">1.0</imsmd:langstring>
+            </imsmd:version>
+            <imsmd:status>
+              <imsmd:source>
+                <imsmd:langstring xml:lang="x-none">TestVision Online</imsmd:langstring>
+              </imsmd:source>
+              <imsmd:value>
+                <imsmd:langstring xml:lang="x-none">final</imsmd:langstring>
+              </imsmd:value>
+            </imsmd:status>
+          </imsmd:lifecycle>
+        </imsmd:lom>
+        <imsqti:qtiMetadata>
+          <imsqti:timeDependent>false</imsqti:timeDependent>
+          <imsqti:interactionType>choiceInteraction</imsqti:interactionType>
+          <imsqti:feedbackType>nonadaptive</imsqti:feedbackType>
+          <imsqti:toolName>Testvision Online</imsqti:toolName>
+          <imsqti:toolVersion>41.0.9240</imsqti:toolVersion>
+          <imsqti:toolVendor>Teelen B.V.</imsqti:toolVendor>
+        </imsqti:qtiMetadata>
+      </imscp:metadata>
+      <imscp:file href="HBO ICT/testmap/submap2/Q154155.xml" />
+      <imscp:file href="css/Q154155.css" />
+    </imscp:resource>
+  </imscp:resources>
+</imscp:manifest>
