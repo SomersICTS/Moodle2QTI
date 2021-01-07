@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -366,6 +368,7 @@ public class QuestionBank {
         String format = parseFormatAttributeFromMXML(xmlParser, context);
         xmlParser.nextTag();
         String formattedText = parseFormattedTextFromMXML(xmlParser, format, context);
+        formattedText = processHTMLAttributeInTag("src", "img", this::imageSrcProcessor, formattedText, context);
         Image image;
         while ((image = Image.parseMXML(xmlParser, this, formattedText)) != null) {
             formattedText = formattedText.replace("@@PLUGINFILE@@" + image.getFullURL(), "@@PLUGINFILE@@" + image.getVersionedFullURL());
@@ -373,6 +376,23 @@ public class QuestionBank {
         xmlParser.findAndAcceptEndTag(tag);
 
         return formattedText;
+    }
+
+    public String imageSrcProcessor(String url, String context) {
+        int nextParam = url.toLowerCase().indexOf("?time=");
+        if (nextParam >= 0) {
+            url = url.substring(0, nextParam);
+        }
+
+        if (url.contains(".informatica.hva.nl/")) {
+            Image image = null; // Image.retrieveFromHTTP(url, this);
+            if (image != null && image.getSize() > 0) {
+                return "@@PLUGINFILE@@" + image.getVersionedFullURL();
+            } else {
+                SLF4J.LOGGER.error("Cannot download image from url '{}' in '{}'", url, context);
+            }
+        }
+        return url;
     }
 
     public static String parseFormatAttributeFromMXML(XMLParser xmlParser, String context) {
@@ -402,8 +422,9 @@ public class QuestionBank {
             formattedText = checkSelfClosingHTMLTag("br", formattedText, context);
             formattedText = replaceHTMLTag("br", "br", "", formattedText, context);
 
-            countAndFlagInvalidWords(new String[]{"moodle.informatica.hva.nl/brokenfile.php"}, formattedText, context);
-            formattedText = checkSrcAttribute(formattedText, context);
+            //countAndFlagInvalidWords(new String[]{".informatica.hva.nl/"}, formattedText, context);
+            //formattedText = processHTMLAttributeInTag("src", "img", QuestionBank::imageSrcProcessor, formattedText, context);
+            //formattedText = checkSrcAttribute(formattedText, context);
 
             // ADS
             formattedText = removeHTMLTag("style", formattedText, context);
@@ -601,7 +622,7 @@ public class QuestionBank {
 
     public static String removeHTMLTag(String tag, String text, String context) {
         String plainTag = tag.split(" ")[0];
-
+        boolean first = true;
         int nextOpen = 0;
         String lcText = text.toLowerCase();
         while (0 <= (nextOpen = findNextOpenTag(tag, lcText, nextOpen))) {
@@ -613,7 +634,10 @@ public class QuestionBank {
                     return text;
                 }
             }
-            SLF4J.LOGGER.warn("Removed tag '{}' from '{}'", text.substring(nextOpen, endClose), context);
+            if (first) {
+                SLF4J.LOGGER.warn("Removed tag '{}' from '{}'", text.substring(nextOpen, endClose), context);
+                first = false;
+            }
             text = text.substring(0, nextOpen) + text.substring(endClose);
             lcText = text.toLowerCase();
         }
@@ -622,14 +646,18 @@ public class QuestionBank {
 
     public static String removeHTMLAttribute(String attribute, String text, String context) {
         int nextAttr = 0;
+        boolean first = true;
         while (0 <= (nextAttr = text.toLowerCase().indexOf(" " + attribute + "=\"", nextAttr))) {
             int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
             if (endAttr > nextAttr) {
-                SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", text.substring(nextAttr, endAttr + 1), context);
+                if (first) {
+                    SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", text.substring(nextAttr, endAttr + 1), context);
+                    first = false;
+                }
                 text = text.substring(0, nextAttr) + text.substring(endAttr+1);
             } else {
                 SLF4J.LOGGER.error("Could not isolate attribute '{}' from '{}' in '{}'", attribute, text, context);
-                nextAttr += attribute.length();
+                return text;
             }
         }
         return text;
@@ -656,6 +684,7 @@ public class QuestionBank {
 
     public static String removeHTMLAttributeFromTag(String attribute, String tag, String text, String context) {
         String openTag = "<" + tag + " ";
+        boolean first = true;
         int nextAttr = 0;
         while (0 <= (nextAttr = text.toLowerCase().indexOf(" " + attribute + "=\"", nextAttr))) {
             String prefix = text.substring(0, nextAttr+1).toLowerCase();
@@ -663,11 +692,14 @@ public class QuestionBank {
             if (prevTag >= 0 && prefix.substring(prevTag).startsWith(openTag)) {
                 int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
                 if (endAttr > nextAttr) {
-                    SLF4J.LOGGER.warn("Removed {}-attribute '{}' from '{}'", tag, text.substring(nextAttr, endAttr + 1), context);
+                    if (first) {
+                        SLF4J.LOGGER.warn("Removed {}-attribute '{}' from '{}'", tag, text.substring(nextAttr, endAttr + 1), context);
+                        first = false;
+                    }
                     text = text.substring(0, nextAttr) + text.substring(endAttr+1);
                 } else {
                     SLF4J.LOGGER.error("Could not isolate {}-attribute '{}' from '{}' in '{}'", tag, attribute, text, context);
-                    nextAttr += attribute.length();
+                    return text;
                 }
             } else {
                 nextAttr += attribute.length();
@@ -689,6 +721,37 @@ public class QuestionBank {
             if (nextAttr < 0 || nextAttr > endOpen) {
                 text = text.substring(0, endOpen) + " " + attribute + "=\"" + defaultValue + "\"" + text.substring(endOpen);
                 lcText = text.toLowerCase();
+            }
+            nextOpen = endOpen;
+        }
+        return text;
+    }
+
+    public static String processHTMLAttributeInTag(String attribute, String tag, BinaryOperator<String> processor, String text, String context) {
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(tag, lcText, nextOpen))) {
+            int endOpen = indexOfNonEscaped('>', text, nextOpen + 2);
+            if (endOpen < 0) {
+                SLF4J.LOGGER.error("Cannot process tag <{}> in '{}' of '{}'", tag, text, context);
+                return text;
+            }
+            int nextAttr = lcText.indexOf(" " + attribute + "=\"", nextOpen + 2);
+            if (nextAttr > 0 && nextAttr < endOpen) {
+                nextAttr += attribute.length()+3;
+                int endAttr = indexOfNonEscaped('"', lcText, nextAttr);
+                if (endAttr > nextAttr && endAttr < endOpen) {
+                    String original = text.substring(nextAttr, endAttr);
+                    String replacement = processor.apply(original, context);
+                    if (!replacement.equals(original)) {
+                        SLF4J.LOGGER.info("Replaced {}:{}-attribute '{}' by '{} in '{}'", tag, attribute,
+                                original, replacement, context);
+                        text = text.substring(0, nextAttr) + replacement + text.substring(endAttr);
+                        lcText = text.toLowerCase();
+                    }
+                } else {
+                    SLF4J.LOGGER.error("Could not isolate {}-attribute '{}' from '{}' in '{}'", tag, attribute, text, context);
+                }
             }
             nextOpen = endOpen;
         }

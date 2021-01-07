@@ -1,13 +1,18 @@
 import utils.SLF4J;
 import utils.XMLParser;
 
+import javax.print.DocFlavor;
 import javax.xml.stream.XMLStreamException;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Locale;
 
 public class Image {
 
@@ -52,7 +57,10 @@ public class Image {
     private Image findDuplicateImage(QuestionBank questionBank) {
         this.sequenceNr = 1;
         Image duplicateImage = questionBank.getImages().get(this.getFullName());
-        while (duplicateImage != null && duplicateImage.getSize() != this.getSize()) {
+        while (duplicateImage != null &&
+                // duplicateImage.getSize() != this.getSize()
+                this.getSize() != 0 && duplicateImage.getDataHash() != this.getDataHash()
+        ) {
             this.sequenceNr++;
             duplicateImage = questionBank.getImages().get(this.getVersionedFullName());
         }
@@ -73,27 +81,96 @@ public class Image {
             }
             xmlParser.findAndAcceptEndTag("file");
 
-            Image duplicateImage = image.findDuplicateImage(questionBank);
+            return image.reconcileOrStoreImage(questionBank, parentText);
 
-            if (parentText != null && !parentText.contains("@@PLUGINFILE@@" + image.getFullURL())) {
-                SLF4J.LOGGER.debug("Ignoring unused image '{}' with size = {}, hash = {}",
-                        image.getFullName(), image.getSize(), image.getDataHash());
-                image.sequenceNr = 0;
-                return image;
-            } else if (duplicateImage != null) {
-                return duplicateImage;
-            } else if (image.sequenceNr > 1) {
-                SLF4J.LOGGER.info("Duplicate image '{}' loaded with size = {}, data hash = {}",
-                        image.getVersionedFullName(), image.getSize(), image.getDataHash() );
-            } else {
-                SLF4J.LOGGER.debug("New image '{}' loaded with size = {}, data hash = {}",
-                        image.getVersionedFullName(), image.getSize(), image.getDataHash() );
+        }
+        return null;
+    }
+
+    private Image reconcileOrStoreImage(QuestionBank questionBank, String parentText) {
+        Image duplicateImage = this.findDuplicateImage(questionBank);
+
+        if (parentText != null && !parentText.contains("@@PLUGINFILE@@" + this.getFullURL())) {
+            SLF4J.LOGGER.debug("Ignoring unused image '{}' with size = {}, hash = {}",
+                    this.getFullName(), this.getSize(), this.getDataHash());
+            this.sequenceNr = 0;
+            return this;
+        } else if (duplicateImage != null) {
+            return duplicateImage;
+        } else if (this.sequenceNr > 1) {
+            SLF4J.LOGGER.info("Duplicate image '{}' loaded with size = {}, data hash = {}",
+                    this.getVersionedFullName(), this.getSize(), this.getDataHash() );
+        } else {
+            SLF4J.LOGGER.debug("New image '{}' loaded with size = {}, data hash = {}",
+                    this.getVersionedFullName(), this.getSize(), this.getDataHash() );
+        }
+
+        questionBank.getImages().put(this.getVersionedFullName(), this);
+
+        return this;
+    }
+
+    public static Image retrieveFromHTTP(String url, QuestionBank questionBank) {
+        String lcUrl = url.toLowerCase();
+        int filePhpIdx = lcUrl.indexOf("file.php/");
+        int fileIdx = lcUrl.lastIndexOf("/");
+        Image image = new Image(url.substring(fileIdx+1));
+        image.path = filePhpIdx > 0 ? url.substring(filePhpIdx+8,fileIdx+1) : "/";
+        while (image.path.replace("/","").length() < image.path.length()-4) {
+            image.path = image.path.substring(image.path.indexOf('/',1));
+        }
+
+        //return image.downloadFromHttp(url, questionBank);
+        return image.downloadFromHttpConnection(url, questionBank);
+    }
+
+    private Image downloadFromHttp(String url, QuestionBank questionBank) {
+        try (InputStream response = new URL(url).openStream()) {
+            byte[] dataBuffer = new byte[4096];
+            this.data = new byte[0];
+            int bytesRead;
+            while ((bytesRead = response.read(dataBuffer, 0, 4096)) != -1) {
+                byte[] newData = Arrays.copyOf(this.data, this.data.length + bytesRead);
+                System.arraycopy(dataBuffer, 0, newData, this.data.length, bytesRead);
+                this.data = newData;
             }
 
-            questionBank.getImages().put(image.getVersionedFullName(), image);
-
-            return image;
+            return this.reconcileOrStoreImage(questionBank, null);
+        } catch (IOException ex) {
+            // handle exception
+            //SLF4J.logException(String.format("IO error while downloading image from '%s'", url), ex);
         }
+        return null;
+    }
+
+    private static class MyAuthenticator extends Authenticator {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(
+                    "username",
+                    "password".toCharArray());
+        }
+    }
+    private Image downloadFromHttpConnection(String url, QuestionBank questionBank) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .GET()
+                    .build();
+
+            HttpResponse<byte[]> response =
+                    HttpClient.newBuilder()
+                            .authenticator(new MyAuthenticator())
+                            //.followRedirects(HttpClient.Redirect.ALWAYS)
+                            .build()
+                            .send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+            this.data = response.body();
+            return this.reconcileOrStoreImage(questionBank, null);
+
+        } catch (Exception ex) {
+        }
+
         return null;
     }
 
