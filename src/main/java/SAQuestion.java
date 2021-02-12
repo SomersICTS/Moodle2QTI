@@ -50,6 +50,7 @@ public class SAQuestion extends Question {
     protected List<String> expandedAnswers;
 
     protected String expandAnswers() {
+        boolean first = true;
         this.expandedAnswers = new ArrayList<>();
 
         for (Answer a : this.answers) {
@@ -57,19 +58,25 @@ public class SAQuestion extends Question {
             double correctness = a.getCorrectness();
             if (correctness > 0) {
                 if (correctness < Question.PARTIAL_CORRECTNESS) {
-                    SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
-                            correctness, rawValue, this.getPartialName());
+                    if (first) {
+                        SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
+                                correctness, rawValue, this.getPartialName());
+                        first = false;
+                    }
                     continue;
                 } else if (correctness < 100) {
-                    SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
-                            correctness, rawValue, this.getPartialName());
+                    if (first) {
+                        SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
+                                correctness, rawValue, this.getPartialName());
+                        first = false;
+                    }
                 }
             } else {
                 continue;
             }
 
             if (QuestionBank.indexOfNonEscaped('*', rawValue, 0) >= 0) {
-                String flatValue = QuestionBank.deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*") );
+                String flatValue = QuestionBank.deEscape(rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
                 rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                 this.expandedAnswers.add(flatValue);
                 SLF4J.LOGGER.debug("Expanded *-wildcard in answer '{}' of question '{}'",
@@ -87,11 +94,11 @@ public class SAQuestion extends Question {
 
         xmlWriter.writeStartElement("responseDeclaration");
         xmlWriter.writeAttribute("identifier", "RESPONSE");
-        xmlWriter.writeAttribute("cardinality", this.expandedAnswers.size() > 1 ? "multiple" : "single" );
+        xmlWriter.writeAttribute("cardinality", this.expandedAnswers.size() > 1 ? "multiple" : "single");
         xmlWriter.writeAttribute("baseType", baseType);
         xmlWriter.writeStartElement("correctResponse");
         //xmlWriter.writeAttribute("interpretation", "caseSensitive");
-        for (String aText: this.expandedAnswers) {
+        for (String aText : this.expandedAnswers) {
             xmlWriter.writeStartElement("value");
             // QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, aText, this.getPartialName() );
             xmlWriter.writeCharacters(aText);

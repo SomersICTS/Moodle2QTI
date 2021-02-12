@@ -369,10 +369,7 @@ public class QuestionBank {
         xmlParser.nextTag();
         String formattedText = parseFormattedTextFromMXML(xmlParser, format, context);
         formattedText = processHTMLAttributeInTag("src", "img", this::imageSrcProcessor, formattedText, context);
-        Image image;
-        while ((image = Image.parseMXML(xmlParser, this, formattedText)) != null) {
-            formattedText = formattedText.replace("@@PLUGINFILE@@" + image.getFullURL(), "@@PLUGINFILE@@" + image.getVersionedFullURL());
-        }
+        formattedText = Image.parseMXMLForText(xmlParser, this, formattedText);
         xmlParser.findAndAcceptEndTag(tag);
 
         return formattedText;
@@ -447,6 +444,7 @@ public class QuestionBank {
             formattedText = removeInnerTagNesting("table", "p", formattedText, context);
             //formattedText = removeInnerTagNesting("pre", "p", formattedText, context);
             formattedText = removeInnerTagNesting("pre", "pre", formattedText, context);
+
             formattedText = removeOuterTagNesting("div", "div", formattedText, context);
             formattedText = removeOuterTagNesting("ol", "p", formattedText, context);
 
@@ -516,7 +514,12 @@ public class QuestionBank {
         text = removeHTMLAttribute("nowrap", text, context);
         text = removeHTMLTag("intgrtsrgls", text, context);
 
-        text = text.replace("<br/>","<br/>\n").replace("</p>","</p>\n").replace("</tr>","</tr>\n");
+        // from infra
+        text = removeHTMLAttribute("dir", text, context);
+
+        text = text.replace("<p></p>","<br/><br/>");
+        text = removeInnerTagNesting("pre", "br", text.replace("<br/>","<br/>\n"), context);
+        text = text.replace("</p>","</p>\n").replace("</tr>","</tr>\n");
         text = text.replace("<span></span>","");
         return text;
     }
@@ -593,7 +596,7 @@ public class QuestionBank {
         return text;
     }
 
-    private static String checkSrcAttribute(String text, String context) {
+    private static String checkImgSrcAttribute(String text, String context) {
         int i2 = 0;
         int i1;
         while (0 <= (i1 = text.toLowerCase().indexOf(" src=\"", i2))) {
@@ -651,7 +654,7 @@ public class QuestionBank {
             int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
             if (endAttr > nextAttr) {
                 if (first) {
-                    SLF4J.LOGGER.warn("Removed attribute '{}' from '{}'", text.substring(nextAttr, endAttr + 1), context);
+                    SLF4J.LOGGER.debug("Removed attribute '{}' from '{}'", text.substring(nextAttr, endAttr + 1), context);
                     first = false;
                 }
                 text = text.substring(0, nextAttr) + text.substring(endAttr+1);
@@ -693,7 +696,7 @@ public class QuestionBank {
                 int endAttr = indexOfNonEscaped('\"', text, nextAttr + attribute.length() + 3);
                 if (endAttr > nextAttr) {
                     if (first) {
-                        SLF4J.LOGGER.warn("Removed {}-attribute '{}' from '{}'", tag, text.substring(nextAttr, endAttr + 1), context);
+                        SLF4J.LOGGER.debug("Removed {}-attribute '{}' from '{}'", tag, text.substring(nextAttr, endAttr + 1), context);
                         first = false;
                     }
                     text = text.substring(0, nextAttr) + text.substring(endAttr+1);

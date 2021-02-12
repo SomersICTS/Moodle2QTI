@@ -41,7 +41,7 @@ public class DragObject {
         xmlWriter.writeEmptyElement("object");
         if (this.image == null) {
             xmlWriter.writeAttribute("type", "image/jpeg");
-            String iconFile = question.getQuestionBank().rootCategory.getMediaFilesFolder() + HOTSPOT_IMAGE;
+            String iconFile = question.getQuestionBank().rootCategory.getMediaFilesFolder() + "/" + HOTSPOT_IMAGE;
             xmlWriter.writeAttribute("data", iconFile);
             xmlWriter.writeAttribute("width", "32");
             xmlWriter.writeAttribute("height", "20");

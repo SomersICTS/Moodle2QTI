@@ -54,23 +54,19 @@ public class Image {
         return this.name.substring(0, lastDotInName) + "-v" + this.sequenceNr + this.name.substring(lastDotInName);
     }
 
-    private Image findDuplicateImage(QuestionBank questionBank) {
-        this.sequenceNr = 1;
-        Image duplicateImage = questionBank.getImages().get(this.getFullName());
-        while (duplicateImage != null &&
-                // duplicateImage.getSize() != this.getSize()
-                this.getSize() != 0 && duplicateImage.getDataHash() != this.getDataHash()
-        ) {
-            this.sequenceNr++;
-            duplicateImage = questionBank.getImages().get(this.getVersionedFullName());
+    public static String parseMXMLForText(XMLParser xmlParser, QuestionBank questionBank, String parentText) throws XMLStreamException {
+        Image image;
+        while ((image = Image.parseMXML(xmlParser, questionBank, parentText)) != null) {
+            parentText = image.replaceUnversionedURLIn(parentText);
         }
-        return duplicateImage;
+        return parentText;
     }
 
     public static Image parseMXML(XMLParser xmlParser, QuestionBank questionBank, String parentText) throws XMLStreamException {
         if (xmlParser.nextBeginTag("file")) {
-            Image image = new Image(xmlParser.getAttributeValue(null, "name"));
-            image.path = xmlParser.getAttributeValue(null, "path", "/");
+            String fileName = xmlParser.getAttributeValue(null, "name").replace(' ','_');
+            Image image = new Image(fileName);
+            image.path = xmlParser.getAttributeValue(null, "path", "/").replace(' ','_');
             if (!image.path.endsWith("/")) image.path += "/";
             String encoding = xmlParser.getAttributeValue(null, "encoding", "");
             String encodedData = xmlParser.getElementText();
@@ -87,10 +83,39 @@ public class Image {
         return null;
     }
 
+    private Image findDuplicateImage(QuestionBank questionBank) {
+        this.sequenceNr = 1;
+        Image duplicateImage = questionBank.getImages().get(this.getFullName());
+        while (duplicateImage != null &&
+                // duplicateImage.getSize() != this.getSize()
+                this.getSize() != 0 && duplicateImage.getDataHash() != this.getDataHash()
+        ) {
+            this.sequenceNr++;
+            duplicateImage = questionBank.getImages().get(this.getVersionedFullName());
+        }
+        return duplicateImage;
+    }
+
+    private boolean isReferencedIn(String text) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.indexOf("@@PLUGINFILE@@", i2))) {
+            i2 = text.indexOf("\"", i1+14);
+            if (i2 < 0) continue;
+            String reference = text.substring(i1+14, i2)
+                    .replace(" ","_").replace("%20","_").replace("%28","(").replace("%29",")");
+            if (reference.equals(this.getFullURL()))
+                return true;
+        }
+        return false;
+    }
+
     private Image reconcileOrStoreImage(QuestionBank questionBank, String parentText) {
         Image duplicateImage = this.findDuplicateImage(questionBank);
 
-        if (parentText != null && !parentText.contains("@@PLUGINFILE@@" + this.getFullURL())) {
+        if (parentText != null && !this.isReferencedIn(parentText)
+            // && !parentText.contains("@@PLUGINFILE@@" + this.getFullURL()))
+            ) {
             SLF4J.LOGGER.debug("Ignoring unused image '{}' with size = {}, hash = {}",
                     this.getFullName(), this.getSize(), this.getDataHash());
             this.sequenceNr = 0;
@@ -108,6 +133,22 @@ public class Image {
         questionBank.getImages().put(this.getVersionedFullName(), this);
 
         return this;
+    }
+
+    private String replaceUnversionedURLIn(String text) {
+        int i2 = 0;
+        int i1;
+        while (0 <= (i1 = text.indexOf("@@PLUGINFILE@@", i2))) {
+            i2 = text.indexOf("\"", i1+14);
+            if (i2 < 0) continue;
+            String reference = text.substring(i1+14, i2)
+                    .replace(" ","_").replace("%20","_").replace("%28","(").replace("%29",")");
+            if (reference.equals(this.getFullURL())) {
+                text = text.substring(0,i1+14) + this.getVersionedFullURL() + text.substring(i2);
+                i2 = i1 + 14 + this.getVersionedFullURL().length();
+            }
+        }
+        return text;
     }
 
     public static Image retrieveFromHTTP(String url, QuestionBank questionBank) {

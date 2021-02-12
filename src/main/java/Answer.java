@@ -25,7 +25,8 @@ public class Answer {
             answer.correctness = xmlParser.getAttributeValue(null, "fraction", 0.0);
             String format = QuestionBank.parseFormatAttributeFromMXML(xmlParser, question.getPartialName());
             xmlParser.nextTag();
-            answer.text = QuestionBank.parseFormattedTextFromMXML(xmlParser, format, question.getPartialName());
+            answer.text = question.getQuestionBank().parseFormattedTextFromMXML(xmlParser, format, question.getPartialName());
+            answer.text = Image.parseMXMLForText(xmlParser, question.getQuestionBank(), answer.text);
             answer.feedback = question.getQuestionBank().parseFormattedElementFromMXML(xmlParser, "feedback", question.getPartialName());
             answer.tolerance = xmlParser.acceptOptionalElementValue("tolerance", 0.0);
             answer.toleranceType = xmlParser.acceptOptionalElementValue("tolerancetype", 0);

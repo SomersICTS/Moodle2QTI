@@ -1,16 +1,19 @@
 import utils.SLF4J;
 
+import java.io.File;
+
 public class FDMCIMoodle2QtiMain {
 
     private static final String[] MOODLE_SOURCES = {
-            // "ADS-20201026.xml",
-            // "WTE-20201014.xml",
-            "WEF-20210107.xml",
-            // "DB2-20200730.xml",
-            // "DB-top-20201217.xml",
-            // "DB-20201014-a.xml", "DB-20201014-b.xml",
-            // "OOAD-20200815.xml",
-            // "DS-20200731.xml"
+            "data/INFRA-20210122-1114.xml",
+            // "data/ADS-20210122-1158.xml",
+            // "data/WTE-20201014.xml",
+            // "data/WEF-20210107.xml",
+            // "data/DB2-20200730.xml",
+            // "data/DB-top-20201217.xml",
+            // "data/DB-20201014-a.xml", "data/DB-20201014-b.xml",
+            // "data/OOAD-20200815.xml",
+            // "data/DS-20200731.xml"
     };
     public static void main(String[] args) {
 
@@ -38,7 +41,8 @@ public class FDMCIMoodle2QtiMain {
 
         for (String source : MOODLE_SOURCES) {
             SLF4J.LOGGER.info("Starting {}-import of questionbank '{}'...", inputFormat, source);
-            String exportName = source.split("\\.")[0] + "_qti";
+            //String exportName = source.split("\\.")[0] + "_qti";
+            String exportName = new File(source).getName().split("\\.")[0] + "_qti";
             QuestionBank questionBank =
                     // QuestionBank.load(System.in, inputFormat);
                     // QuestionBank.loadFromMoodleXMLResource("DB2-20200730.xml");

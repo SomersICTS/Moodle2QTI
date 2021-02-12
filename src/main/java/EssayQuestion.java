@@ -79,6 +79,8 @@ public class EssayQuestion extends Question {
     public void exportQTI21QuestionRubricBlock(XMLWriter xmlWriter) throws XMLStreamException {
         super.exportQTI21QuestionRubricBlock(xmlWriter);
 
+        if (this.defaultGrade <= 0) return;
+
         xmlWriter.writeStartElement("rubricBlock");
         xmlWriter.writeAttribute("view", "scorer");
         xmlWriter.writeAttribute("class", "tvScoringCriteria");

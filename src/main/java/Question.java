@@ -307,20 +307,22 @@ public class Question {
     }
 
     private String resolveFileReferences(String text) {
-        String mediaPath = this.getQuestionBank().rootCategory.getMediaFilesFolder();
         int i2 = 0;
         int i1;
         while (0 <= (i1 = text.indexOf("@@PLUGINFILE@@", i2))) {
             i2 = text.indexOf("\"", i1+14);
             if (i2 < 0) continue;
-            this.addFileReference(text.substring(i1+14, i2));
+            String replacement = this.addFileReference(text.substring(i1+14, i2));
+            text = text.substring(0,i1) + replacement + text.substring(i2);
+            i2 = i1 + replacement.length();
         }
-        return text.replace("@@PLUGINFILE@@", mediaPath);
+        return text;
     }
 
     public String addFileReference(String fileRef) {
         String mediaPath = this.getQuestionBank().rootCategory.getMediaFilesFolder();
-        String mediaRef = mediaPath + fileRef.replace("%20"," ");
+        String mediaRef = mediaPath + fileRef;
+                // fileRef.replace(" ","_").replace("%20","_").replace("%28","(").replace("%29",")");
         this.fileReferences.add(mediaRef);
         return mediaRef;
     }
