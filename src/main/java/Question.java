@@ -356,7 +356,11 @@ public class Question {
     }
 
     public String getFlatName() {
-        return this.name.replace(' ','_').replaceAll("[^A-Za-z0-9_]","");
+        String flatName = this.name.replace(' ','_').replaceAll("[^A-Za-z0-9_]","");
+        if (flatName.length() > 60) {
+            flatName = flatName.substring(0,15) + "(" + flatName.hashCode() + ")" + flatName.substring(flatName.length()-30);
+        }
+        return flatName;
     }
 
     public Category getCategory() {

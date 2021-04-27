@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClozeQuestion extends Question {
-    private static int nextClozeEntryId = 3001;
+    private static int nextClozeEntryId = 30001;
 
     private class ClozeAnswer {
         private int id;
@@ -34,7 +34,7 @@ public class ClozeQuestion extends Question {
             return "alt_" + this.id;
         }
         private String getAnswerIdText(int aIdx) {
-            return this.getIdText() + "_" + aIdx;
+            return this.getIdText() + "_" + (aIdx+1);
         }
         private String getBaseType() {
             if (type.startsWith("nm")) {
@@ -89,12 +89,12 @@ public class ClozeQuestion extends Question {
     }
 
     private void extractClozeEntries() {
-        int nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, 0);
+        int nextPosition = QuestionBank.indexOfNonEscaped("{", this.questionText, 0);
         while (nextPosition >= 0) {
             ClozeEntry ce = new ClozeEntry();
             ce.type = null;
             ce.weight = -1;
-            int nextBrace = QuestionBank.indexOfNonEscaped('}', this.questionText, nextPosition + 5);
+            int nextBrace = QuestionBank.indexOfNonEscaped("}", this.questionText, nextPosition + 5);
             int nextColon1 = this.questionText.indexOf(':', nextPosition + 1);
             int nextColon2 = this.questionText.indexOf(':', nextColon1 + 3);
             if (nextColon1 > nextPosition && nextColon2 > nextColon1 && nextBrace > nextColon2) {
@@ -108,7 +108,7 @@ public class ClozeQuestion extends Question {
                 if (ce.type.length() > 4 || ce.type.length() < 2) ce.type = null;
             }
             if (ce.type == null || ce.weight < 0) {
-                nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, nextPosition+1);
+                nextPosition = QuestionBank.indexOfNonEscaped("{", this.questionText, nextPosition+1);
                 continue;
             }
 
@@ -133,13 +133,13 @@ public class ClozeQuestion extends Question {
                         }
                     }
                 }
-                int endAnswer = QuestionBank.indexOfNonEscaped('~', this.questionText, nextAnswer);
-                int endEntry = QuestionBank.indexOfNonEscaped('}', this.questionText, nextAnswer);
+                int endAnswer = QuestionBank.indexOfNonEscaped("~", this.questionText, nextAnswer);
+                int endEntry = QuestionBank.indexOfNonEscaped("}", this.questionText, nextAnswer);
                 if (endEntry > 0 && endEntry < endAnswer || endAnswer < 0) {
                     endAnswer = endEntry;
                 }
                 String rawValue = this.questionText.substring(nextAnswer, endAnswer);
-                if (QuestionBank.indexOfNonEscaped('*', rawValue, 0) >= 0) {
+                if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
                     String flatValue = QuestionBank.deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*") );
                     rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                     ClozeAnswer flatCa = new ClozeAnswer();
@@ -167,7 +167,7 @@ public class ClozeQuestion extends Question {
                     String.format("{#%02d}", this.clozeEntries.size()) +
                     this.questionText.substring(nextAnswer);
             this.clozeEntries.add(ce);
-            nextPosition = QuestionBank.indexOfNonEscaped('{', this.questionText, nextPosition+5);
+            nextPosition = QuestionBank.indexOfNonEscaped("{", this.questionText, nextPosition+5);
         }
 
         if (this.clozeEntries.size() == 0) {

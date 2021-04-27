@@ -75,7 +75,7 @@ public class SAQuestion extends Question {
                 continue;
             }
 
-            if (QuestionBank.indexOfNonEscaped('*', rawValue, 0) >= 0) {
+            if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
                 String flatValue = QuestionBank.deEscape(rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
                 rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                 this.expandedAnswers.add(flatValue);
