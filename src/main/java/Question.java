@@ -10,7 +10,7 @@ public class Question {
     public static final String SELECTION_BASETYPE = "identifier";
     //public static final String SELECTION_BASETYPE = "string";
     public static final double PARTIAL_CORRECTNESS = 50;
-    public static final int MAX_DEFAULT_GRADE = 5;
+    public static final int MAX_DEFAULT_GRADE = 10;
     private static final int RESERVED_ID_MIN = 630001;
     private static final int RESERVED_ID_MAX = 639999;
     private static int nextIdNumber = RESERVED_ID_MIN;

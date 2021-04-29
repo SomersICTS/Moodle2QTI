@@ -50,7 +50,8 @@ public class SAQuestion extends Question {
     protected List<String> expandedAnswers;
 
     protected String expandAnswers() {
-        boolean first = true;
+        boolean firstPartialScore = true;
+        boolean firstWildCard = true;
         this.expandedAnswers = new ArrayList<>();
 
         for (Answer a : this.answers) {
@@ -58,17 +59,17 @@ public class SAQuestion extends Question {
             double correctness = a.getCorrectness();
             if (correctness > 0) {
                 if (correctness < Question.PARTIAL_CORRECTNESS) {
-                    if (first) {
+                    if (firstPartialScore) {
                         SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
                                 correctness, rawValue, this.getPartialName());
-                        first = false;
+                        firstPartialScore = false;
                     }
                     continue;
                 } else if (correctness < 100) {
-                    if (first) {
+                    if (firstPartialScore) {
                         SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
                                 correctness, rawValue, this.getPartialName());
-                        first = false;
+                        firstPartialScore = false;
                     }
                 }
             } else {
@@ -79,8 +80,11 @@ public class SAQuestion extends Question {
                 String flatValue = QuestionBank.deEscape(rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
                 rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                 this.expandedAnswers.add(flatValue);
-                SLF4J.LOGGER.debug("Expanded *-wildcard in answer '{}' of question '{}'",
-                        flatValue, this.getPartialName());
+                if (firstWildCard) {
+                    SLF4J.LOGGER.warn("Expanded *-wildcard in answer '{}' of question '{}'",
+                            flatValue, this.getPartialName());
+                    firstWildCard = false;
+                }
             }
             this.expandedAnswers.add(QuestionBank.deEscape(rawValue));
         }

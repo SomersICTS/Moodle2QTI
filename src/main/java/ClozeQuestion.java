@@ -90,6 +90,7 @@ public class ClozeQuestion extends Question {
 
     private void extractClozeEntries() {
         int nextPosition = QuestionBank.indexOfNonEscaped("{", this.questionText, 0);
+        boolean firstWildCard = true;
         while (nextPosition >= 0) {
             ClozeEntry ce = new ClozeEntry();
             ce.type = null;
@@ -146,8 +147,11 @@ public class ClozeQuestion extends Question {
                     flatCa.score = ca.score;
                     flatCa.value = flatValue;
                     ce.answers.add(flatCa);
-                    SLF4J.LOGGER.debug("Expanded *-wildcard in cloze-entry #{} in question '{}'",
-                            this.clozeEntries.size(), this.getPartialName());
+                    if (firstWildCard) {
+                        SLF4J.LOGGER.warn("Expanded *-wildcard in cloze-entry #{} in question '{}'",
+                                this.clozeEntries.size(), this.getPartialName());
+                        firstWildCard = false;
+                    }
                 }
                 ca.value = QuestionBank.deEscape( rawValue );
                 ce.answers.add(ca);

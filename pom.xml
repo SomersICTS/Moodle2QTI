@@ -37,10 +37,11 @@
             <artifactId>stax-api</artifactId>
             <version>1.0-2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/net.java.dev.stax-utils/stax-utils -->
         <dependency>
             <groupId>net.java.dev.stax-utils</groupId>
             <artifactId>stax-utils</artifactId>
-            <version>20080702</version>
+            <version>20070216</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.bea.xml</groupId>

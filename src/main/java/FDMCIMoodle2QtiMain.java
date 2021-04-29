@@ -9,13 +9,13 @@ public class FDMCIMoodle2QtiMain {
             // "data/se1_q.xml",
             // "data/INFRA-20210122-1114.xml",
             // "data/ADS-20210122-1158.xml",
-            // "data/WTE-20201014.xml",
             // "data/WEF-20210107.xml",
             // "data/DB2-20200730.xml",
             // "data/DB-top-20201217.xml",
             // "data/DB-20201014-a.xml", "data/DB-20201014-b.xml",
             // "data/OOAD-20200815.xml",
             // "data/DS-20200731.xml"
+            "data/WTE-20210429-1221.xml"
     };
     public static void main(String[] args) {
 
