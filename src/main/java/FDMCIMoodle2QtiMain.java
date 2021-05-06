@@ -5,8 +5,9 @@ import java.io.File;
 public class FDMCIMoodle2QtiMain {
 
     private static final String[] MOODLE_SOURCES = {
-            "data/ITSM-20210427-1029.xml",
-            // "data/se1_q.xml",
+            // "data/BUS-20210429-1347.xml",
+            // "data/ITSM-20210429-1322.xml",
+            "data/se1_q.xml",
             // "data/INFRA-20210122-1114.xml",
             // "data/ADS-20210122-1158.xml",
             // "data/WEF-20210107.xml",
@@ -15,7 +16,7 @@ public class FDMCIMoodle2QtiMain {
             // "data/DB-20201014-a.xml", "data/DB-20201014-b.xml",
             // "data/OOAD-20200815.xml",
             // "data/DS-20200731.xml"
-            "data/WTE-20210429-1221.xml"
+            // "data/WTE-20210429-1221.xml"
     };
     public static void main(String[] args) {
 

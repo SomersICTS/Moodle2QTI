@@ -11,6 +11,7 @@ public class Question {
     //public static final String SELECTION_BASETYPE = "string";
     public static final double PARTIAL_CORRECTNESS = 50;
     public static final int MAX_DEFAULT_GRADE = 10;
+    private static final int MAX_DISPLAY_NAME_LENGTH = 60;
     private static final int RESERVED_ID_MIN = 630001;
     private static final int RESERVED_ID_MAX = 639999;
     private static int nextIdNumber = RESERVED_ID_MIN;
@@ -59,7 +60,13 @@ public class Question {
         return this.category.getFullName() + "/" + this.getFlatName();
     }
     public String getPartialName() {
-        String partialName = this.category.getFullName() + "/" + this.getFlatName();
+        String partialName = this.category.getFullName() + "/" + this.getQuestionId() + "_" + this.getFlatName();
+        int firstSlashPosition = partialName.indexOf('/');
+        while (partialName.length() > MAX_DISPLAY_NAME_LENGTH && firstSlashPosition > 0) {
+            partialName = "..." + partialName.substring(firstSlashPosition);
+            firstSlashPosition = partialName.indexOf('/', 4);
+        }
+        /*
         int numFolders = partialName.length() - partialName.replace("/", "").length();
         if (numFolders > 2) {
             for (int c = 0; c < numFolders - 2; c++) {
@@ -67,6 +74,7 @@ public class Question {
             }
             partialName = ".../" + partialName;
         }
+        */
         return partialName;
     }
     public String getQuestionId() {

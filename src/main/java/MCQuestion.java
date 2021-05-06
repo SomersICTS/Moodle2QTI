@@ -48,23 +48,35 @@ public class MCQuestion extends Question {
 
     @Override
     public void exportQTI21ResponseDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
+        boolean firstScoreWarning = true;
         xmlWriter.writeStartElement("responseDeclaration");
         xmlWriter.writeAttribute("identifier", "RESPONSE");
         xmlWriter.writeAttribute("cardinality", this.singleAnswer ? "single" : "multiple");
         xmlWriter.writeAttribute("baseType", "identifier");
+        double maxCorrectness =
+                this.answers.stream().mapToDouble(Answer::getCorrectness).max().orElse(0.0);
+        if (this.singleAnswer & maxCorrectness < 100) {
+            SLF4J.LOGGER.warn("Single-answer mc-question '{}' gives a score of '{}' (below 100)",
+                    this.getPartialName(), maxCorrectness);
+            firstScoreWarning = false;
+        }
         xmlWriter.writeStartElement("correctResponse");
         int numCorrectAnswers = 0;
         for (Answer a: this.answers) {
             double correctness = a.getCorrectness();
             if (correctness > 0) {
                 if (this.singleAnswer) {
-                    if (correctness < Question.PARTIAL_CORRECTNESS) {
-                        SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
-                                correctness, a.getId(), this.getPartialName());
+                    if (correctness < maxCorrectness) {
+                            SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in single-answer mc-question '{}'",
+                                    correctness, a.getId(), this.getPartialName());
                         continue;
-                    } else if (correctness < 100) {
-                        SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
-                                correctness, a.getId(), this.getPartialName());
+                    } else if (numCorrectAnswers > 0) {
+                        if (firstScoreWarning) {
+                            SLF4J.LOGGER.warn("Discarded duplicate correct answer {} in single-answer mc-question '{}'",
+                                    a.getId(), this.getPartialName());
+                            firstScoreWarning = false;
+                        }
+                        continue;
                     }
                 }
                 numCorrectAnswers++;

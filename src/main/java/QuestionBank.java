@@ -414,6 +414,7 @@ public class QuestionBank {
                 format.equals("html") //|| format.equals("moodle_auto_format")
         ) {
             // if (formattedText.startsWith("<![CDATA[") && formattedText.endsWith("]]>")) formattedText = formattedText.substring(9,formattedText.length()-3);
+            formattedText = formattedText.replace("<ol><ol>", "<ol>").replace("</ol></ol>", "</ol>");
             formattedText = checkSelfClosingHTMLTag("img", formattedText, context);
             formattedText = checkHTMLAttributeInTag("alt", "img", "none", formattedText, context);
             formattedText = checkSelfClosingHTMLTag("br", formattedText, context);
@@ -464,6 +465,7 @@ public class QuestionBank {
             // SE
             formattedText = removeOuterTagNesting("span", "p", formattedText, context);
             formattedText = removeInnerTagNesting("p", "h1", formattedText, context);
+            formattedText = fixInnerOuterTagNesting("div", "pre", formattedText, context);
         }
         return formattedText;
     }
@@ -475,6 +477,38 @@ public class QuestionBank {
         return text;
     }
 
+    public static String fixHTMLTagCharactersForQTI21(String text, String context) {
+        int nextPos = 0;
+        while (0 <= (nextPos = text.indexOf('<', nextPos))) {
+            char nextCh = (nextPos < text.length()-1 ? text.charAt(nextPos+1) : '\0');
+            if (nextCh != '/' && nextCh != '!' && nextCh != '?' && ! Character.isAlphabetic(nextCh)) {
+                text = text.substring(0, nextPos) + "≺" + text.substring(nextPos+1);
+            }
+            nextPos++;
+        }
+        /*
+        nextPos = 0;
+        while (0 <= (nextPos = text.indexOf('>', nextPos))) {
+            char prevCh = (nextPos > 0 ? text.charAt(nextPos-1) : '\0');
+            if ( prevCh != '"' && prevCh != '/' && prevCh != '-' && prevCh != '?' && ! Character.isAlphabetic(prevCh) && ! Character.isDigit(prevCh)) {
+                text = text.substring(0, nextPos) + "≻" + text.substring(nextPos+1);
+            }
+            nextPos++;
+        }
+         */
+        nextPos = 0;
+        while (0 <= (nextPos = text.indexOf('&', nextPos))) {
+            int semiPos = nextPos+1;
+            while (semiPos < text.length() && Character.isAlphabetic(text.charAt(semiPos))) semiPos++;
+            if (semiPos >= text.length() || text.charAt(semiPos) != ';') {
+                text = text.substring(0, nextPos) + "\uFF06" + text.substring(nextPos+1);
+            }
+            nextPos++;
+        }
+        return text;
+    }
+
+
     public static String fixHTMLforQTI21(String text, String context) {
         text = text.replace("<u>", "<b>").replace("</u>", "</b>");
         text = removeOuterTagNesting("p", "p", text, context);
@@ -482,9 +516,12 @@ public class QuestionBank {
         text = removeOuterTagNesting("p", "ul", text, context);
         text = removeOuterTagNesting("p", "div", text, context);
         text = removeInnerTagNesting("i", "p", text, context);
+        text = removeInnerTagNesting("b", "p", text, context);
         //text = text.replace("<pre>", "<code>").replace("</pre>", "</code>");
         text = text.replace("&nbsp;", " ");
         text = text.replace("&radic;", "√");
+        text = fixHTMLTagCharactersForQTI21(text, context);
+
         text = removeHTMLAttribute("role", text, context);
         text = removeHTMLAttribute("style", text, context);
         text = removeHTMLAttribute("border", text, context);
@@ -524,6 +561,8 @@ public class QuestionBank {
 
         // from infra
         text = removeHTMLAttribute("dir", text, context);
+        text = removeHTMLAttribute("original-url", text, context);
+        text = removeHTMLAttribute("target", text, context);
 
         text = text.replace("<p></p>", "<br/><br/>");
         text = removeInnerTagNesting("pre", "br", text.replace("<br/>", "<br/>\n"), context);
@@ -730,6 +769,7 @@ public class QuestionBank {
             }
             int nextAttr = lcText.indexOf(" " + attribute + "=\"", nextOpen + 2);
             if (nextAttr < 0 || nextAttr > endOpen) {
+                if (text.charAt(endOpen - 1) == '/') endOpen--;
                 text = text.substring(0, endOpen) + " " + attribute + "=\"" + defaultValue + "\"" + text.substring(endOpen);
                 lcText = text.toLowerCase();
             }
@@ -777,7 +817,6 @@ public class QuestionBank {
             if (selfClosingEnd > from && selfClosingEnd < openEnd) {
                 return selfClosingEnd + 2;
             }
-            ;
         }
         return -1;
     }
@@ -848,8 +887,77 @@ public class QuestionBank {
         return from;
     }
 
+    private static String fixInnerOuterTagNesting(String oTag, String iTag, String text, String context) {
+        boolean firstError = true;
+        String lcText = text.toLowerCase();
+        int nextO = findNextOpenTag(oTag, lcText, 0);
+        int nextI = findNextOpenTag(iTag, lcText, 0);
+        while (nextO >= 0 || nextI >= 0) {
+            if (nextO >= 0 && (nextO <= nextI || nextI < 0)) {
+                int endClose = findSelfClosingEnd(lcText, nextO);
+                if (endClose < 0) {
+                    endClose = findMatchingClosingTagIndex(oTag, lcText, nextO);
+
+                    while (endClose < 0) {
+                        if (firstError) {
+                            SLF4J.LOGGER.warn("FIOTN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
+                                    oTag, oTag, text, context);
+                            firstError = false;
+                        }
+                        text += "</" + oTag + ">";
+                        lcText = text.toLowerCase();
+                        endClose = findMatchingClosingTagIndex(oTag, lcText, nextO);
+                    }
+
+                    String embeddedText = fixInnerOuterTagNesting(oTag, iTag,
+                            text.substring(nextO + 3, endClose - 3), context);
+
+                    // replace inner part
+                    text = text.substring(0, nextO + 3) + embeddedText + text.substring(endClose - 3);
+                    lcText = text.toLowerCase();
+                    nextO += embeddedText.length() + 6;
+                } else {
+                    nextO = endClose;
+                }
+                nextI = nextO;
+            } else if (nextI >= 0 && (nextI <= nextO || nextO < 0)) {
+                int endClose = findSelfClosingEnd(lcText, nextI);
+                if (endClose < 0) {
+                    endClose = findMatchingClosingTagIndex(iTag, lcText, nextI);
+
+                    while (endClose < 0) {
+                        if (firstError) {
+                            SLF4J.LOGGER.warn("FIOTN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
+                                    iTag, iTag, text, context);
+                            firstError = false;
+                        }
+                        text += "</" + iTag + ">";
+                        lcText = text.toLowerCase();
+                        endClose = findMatchingClosingTagIndex(iTag, lcText, nextI);
+                    }
+
+                    String embeddedText = fixInnerOuterTagNesting(iTag, oTag,
+                            text.substring(nextI + 3, endClose - 3), context);
+
+                    // replace inner part
+                    text = text.substring(0, nextI + 3) + embeddedText + text.substring(endClose - 3);
+                    lcText = text.toLowerCase();
+                    nextI += embeddedText.length() + 6;
+                } else {
+                    nextI = endClose;
+                }
+                nextO = nextI;
+            }
+            nextO = findNextOpenTag(oTag, lcText, nextO);
+            nextI = findNextOpenTag(iTag, lcText, nextI);
+        }
+
+        return text;
+    }
+
     private static String removeOuterTagNesting(String oTag, String iTag, String text, String context) {
         int nextOpen = 0;
+        boolean firstError = true;
         String lcText = text.toLowerCase();
         while (0 <= (nextOpen = findNextOpenTag(oTag, lcText, nextOpen))) {
             int endClose = findSelfClosingEnd(lcText, nextOpen);
@@ -857,22 +965,31 @@ public class QuestionBank {
                 endClose = findMatchingClosingTagIndex(oTag, lcText, nextOpen);
                 if (endClose < 0) {
                     if (findNextOpenTag(iTag, lcText, nextOpen + 3) >= 0) {
-                        SLF4J.LOGGER.error("ROTN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
-                                oTag, oTag, text, context);
+                        if (firstError) {
+                            SLF4J.LOGGER.warn("ROTN({},{}): <{}> and </{}> not properly nested in '{}' of '{}'", oTag, iTag,
+                                    oTag, oTag, text, context);
+                            firstError = false;
+                        }
+                        // remove start tag only
+                        text = removeTagAt(text, nextOpen);
+                    } else {
+                        // done
+                        return text;
                     }
-                    return text;
                 } else {
                     String embeddedText = lcText.substring(nextOpen, endClose);
                     if (findNextOpenTag(iTag, embeddedText, 3) >= 0) {
                         // removing outer nesting
                         text = removeTagAt(text, endClose - (oTag.length() + 3));
                         text = removeTagAt(text, nextOpen);
-                        lcText = text.toLowerCase();
+
                     } else {
                         nextOpen = endClose;
                     }
                 }
+                lcText = text.toLowerCase();
             } else {
+                // skip self closing outer tag
                 nextOpen = endClose;
             }
         }
