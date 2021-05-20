@@ -140,12 +140,14 @@ public class ClozeQuestion extends Question {
                     endAnswer = endEntry;
                 }
                 String rawValue = this.questionText.substring(nextAnswer, endAnswer);
+                ca.value = rawValue;
+                /* moved to export
                 if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
                     String flatValue = QuestionBank.deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*") );
                     rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
                     ClozeAnswer flatCa = new ClozeAnswer();
                     flatCa.score = ca.score;
-                    flatCa.value = flatValue;
+                    flatCa.value = QuestionBank.deEscape(flatValue);
                     ce.answers.add(flatCa);
                     if (firstWildCard) {
                         SLF4J.LOGGER.warn("Expanded *-wildcard in cloze-entry #{} in question '{}'",
@@ -154,6 +156,7 @@ public class ClozeQuestion extends Question {
                     }
                 }
                 ca.value = QuestionBank.deEscape( rawValue );
+                */
                 ce.answers.add(ca);
                 ce.maxLength = Integer.max(ce.maxLength, ca.value.length());
                 nextAnswer = endAnswer;
@@ -212,6 +215,7 @@ public class ClozeQuestion extends Question {
 
     @Override
     public void exportQTI21ResponseDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
+        boolean firstWildCard = true;
         xmlWriter.writeStartElement("responseDeclaration");
         xmlWriter.writeAttribute("identifier", "RESPONSE");
         xmlWriter.writeAttribute("cardinality", "multiple");
@@ -236,8 +240,25 @@ public class ClozeQuestion extends Question {
                     if (ce.type.startsWith("m")) {
                         xmlWriter.writeCharacters(ce.getAnswerIdText(caIdx));
                     } else {
-                        //QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, ca.value, this.getPartialName() );
-                        xmlWriter.writeCharacters(ca.value);
+                        String rawValue = ca.value;
+                        if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
+                            String flatValue = QuestionBank.deEscape( rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*") );
+                            rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
+                            if (firstWildCard) {
+                                SLF4J.LOGGER.warn("Expanded *-wildcard in cloze-entry #{} in question '{}'",
+                                        ceIdx, this.getPartialName());
+                                firstWildCard = false;
+                            }
+                            xmlWriter.writeCharacters(QuestionBank.deEscape(flatValue));
+
+                            // finish the first correct value and start another correct value for the wild-card
+                            xmlWriter.writeEndElement(); // value
+                            xmlWriter.writeStartElement("value");
+                            xmlWriter.writeAttribute("fieldIdentifier", ce.getIdText());
+                            xmlWriter.writeAttribute("baseType", ce.getBaseType());
+                        }
+
+                        xmlWriter.writeCharacters(QuestionBank.deEscape(rawValue));
                     }
                     xmlWriter.writeEndElement(); // value
                 }

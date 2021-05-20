@@ -60,14 +60,14 @@ public class SAQuestion extends Question {
             if (correctness > 0) {
                 if (correctness < Question.PARTIAL_CORRECTNESS) {
                     if (firstPartialScore) {
-                        SLF4J.LOGGER.warn("Discarded partial score {} of answer {} in question '{}'",
+                        SLF4J.LOGGER.warn("Discarded partial score {} of answer '{}' in question '{}'",
                                 correctness, rawValue, this.getPartialName());
                         firstPartialScore = false;
                     }
                     continue;
                 } else if (correctness < 100) {
                     if (firstPartialScore) {
-                        SLF4J.LOGGER.warn("Upgraded partial score {} of answer {} in question '{}'",
+                        SLF4J.LOGGER.warn("Upgraded partial score {} of answer '{}' in question '{}'",
                                 correctness, rawValue, this.getPartialName());
                         firstPartialScore = false;
                     }
@@ -79,7 +79,7 @@ public class SAQuestion extends Question {
             if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
                 String flatValue = QuestionBank.deEscape(rawValue.replace("\\*", "{$$$}").replace("*", "").replace("{$$$}", "\\*"));
                 rawValue = rawValue.replace("\\*", "{$$$}").replace("*", " ").replace("{$$$}", "\\*");
-                this.expandedAnswers.add(flatValue);
+                this.expandedAnswers.add(QuestionBank.deEscape(flatValue));
                 if (firstWildCard) {
                     SLF4J.LOGGER.warn("Expanded *-wildcard in answer '{}' of question '{}'",
                             flatValue, this.getPartialName());
