@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<assessmentItem identifier="Q220209" title="Omschrijving" adaptive="false" timeDependent="false" toolName="Testvision Online" toolVersion="45.0.10053" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>ok</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMinimum="0" normalMaximum="1" />
+  <stylesheet href="css/Q220209.css" type="text/css" />
+  <stylesheet href="css/TvEditor.css" type="text/css" />
+  <itemBody>
+    <div id="textBlockId_5870" class="textblock tvblock tvcss_1">
+      <div class="rte_zone tveditor1">Dit is alleen maar een omschrijving zonder antwoord.<br /><br /><span class="fr-video fr-fvc fr-dvb"><object type="text/html" data="mediahtml/TvMedia_1.htm" class="tvmedia" /></span></div>
+    </div>
+    <extendedTextInteraction responseIdentifier="RESPONSE" />
+  </itemBody>
+  <responseProcessing templateLocation="/templates/RPTEMPLATE_GF.xml" />
+</assessmentItem>

@@ -127,15 +127,11 @@ public class EssayQuestion extends Question {
             xmlWriter.writeEndElement(); // td
             xmlWriter.writeStartElement("td");
             if ((int)(100*mark) != 100*((int)mark)) {
-                if (pointsLeft != 0) {
-                    SLF4J.LOGGER.warn("Non-integer grade {} points in {}",
+                SLF4J.LOGGER.warn("Non-integer grade {} points in {}",
                             mark, this.getPartialName());
-                }
-                xmlWriter.writeCharacters(String.format("%.2f", mark));
+                if (mark >= pointsLeft) mark = Math.ceil(pointsLeft);
             }
-            else {
-                xmlWriter.writeCharacters(String.valueOf((int) mark));
-            }
+            xmlWriter.writeCharacters(String.valueOf((int)mark));
             xmlWriter.writeEndElement(); // td
             xmlWriter.writeEndElement(); // tr
             pointsLeft -= mark;

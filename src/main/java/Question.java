@@ -163,9 +163,7 @@ public class Question {
 
         xmlWriter.writeStartElement("itemBody");
 
-        this.exportQTI21TextBlock(xmlWriter, this.questionText);
-
-        this.exportQTI21QuestionClosing(xmlWriter);
+        this.exportQTI21QuestionText(xmlWriter);
 
         this.exportQTI21QuestionChoices(xmlWriter);
 
@@ -280,6 +278,10 @@ public class Question {
         xmlWriter.writeEndElement(); // modalFeedback
     }
 
+    public void exportQTI21QuestionText(XMLWriter xmlWriter) throws XMLStreamException {
+        this.exportQTI21TextBlock(xmlWriter, this.questionText);
+    }
+
     public void exportQTI21TextBlock(XMLWriter xmlWriter, String textBlock) throws XMLStreamException {
         xmlWriter.writeStartElement("div");
         xmlWriter.writeAttribute("id", QuestionBank.TV_TEXTBLOCK_ID + QuestionBank.getNextTextBlockId());
@@ -293,9 +295,6 @@ public class Question {
         xmlWriter.writeRawCharacters(qtiText);
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div
-    }
-
-    public void exportQTI21QuestionClosing(XMLWriter xmlWriter) throws XMLStreamException {
     }
 
     public void exportQTI21QuestionRubricBlock(XMLWriter xmlWriter) throws XMLStreamException {

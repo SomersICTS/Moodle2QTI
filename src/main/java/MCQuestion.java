@@ -105,7 +105,10 @@ public class MCQuestion extends Question {
     }
 
     @Override
-    public void exportQTI21QuestionClosing(XMLWriter xmlWriter) throws XMLStreamException {
+    public void exportQTI21QuestionText(XMLWriter xmlWriter) throws XMLStreamException {
+
+        super.exportQTI21QuestionText(xmlWriter);
+
         if (this.singleAnswer) return;
 
         xmlWriter.writeStartElement("div");

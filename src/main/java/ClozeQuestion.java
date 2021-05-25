@@ -13,6 +13,7 @@ public class ClozeQuestion extends Question {
         private int id;
         private double score;
         private String value;
+        private String feedback;
     }
 
     private class ClozeEntry {
@@ -140,6 +141,11 @@ public class ClozeQuestion extends Question {
                     endAnswer = endEntry;
                 }
                 String rawValue = this.questionText.substring(nextAnswer, endAnswer);
+                int startFeedback = QuestionBank.indexOfNonEscaped("#", rawValue, 0);
+                if (startFeedback >= 0) {
+                    ca.feedback = rawValue.substring(startFeedback);
+                    rawValue = rawValue.substring(0, startFeedback);
+                }
                 ca.value = rawValue;
                 /* moved to export
                 if (QuestionBank.indexOfNonEscaped("*", rawValue, 0) >= 0) {
@@ -321,6 +327,28 @@ public class ClozeQuestion extends Question {
         xmlWriter.writeEndElement(); // div
         xmlWriter.writeEndElement(); // div
     }
+
+    @Override
+    public void exportQTI21FeedbackOutcomeDeclaration(XMLWriter xmlWriter) throws XMLStreamException {
+        // add the cloze answer feedback to the question feedback entries, if any.
+        for (int ceIdx = 0; ceIdx < this.clozeEntries.size(); ceIdx++) {
+            ClozeEntry ce = this.clozeEntries.get(ceIdx);
+            for (int caIdx = 0; caIdx < ce.answers.size(); caIdx++) {
+                ClozeAnswer ca = ce.answers.get(caIdx);
+                if (ca.feedback != null) {
+                    if (ca.score > 0)
+                        this.partiallyCorrectFeedback = String.format("%s\n<p>%s</p>",
+                                this.partiallyCorrectFeedback != null ? this.partiallyCorrectFeedback : "", ca.feedback);
+                    else
+                        this.incorrectFeedback = String.format("%s\n<p>%s</p>",
+                                this.incorrectFeedback != null ? this.incorrectFeedback : "", ca.feedback);
+                }
+            }
+        }
+        // let the super class handle the feedback
+        super.exportQTI21FeedbackOutcomeDeclaration(xmlWriter);
+    }
+
 
     public void exportQTI21ResponseProcessing(XMLWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeEmptyElement("responseProcessing");
