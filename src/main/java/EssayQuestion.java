@@ -66,7 +66,8 @@ public class EssayQuestion extends Question {
     public void exportQTI21QuestionChoices(XMLWriter xmlWriter) throws XMLStreamException {
         if (this.numAttachments > 0) {
             xmlWriter.writeEmptyElement("uploadInteraction");
-            xmlWriter.writeAttribute("identifier", "RESPONSE_01");
+            xmlWriter.writeAttribute("responseIdentifier", "RESPONSE_01");
+            //xmlWriter.writeAttribute("identifier", "RESPONSE_01");
         }
         if (!this.responseFormat.equalsIgnoreCase("noinline")) {
             xmlWriter.writeEmptyElement("extendedTextInteraction");

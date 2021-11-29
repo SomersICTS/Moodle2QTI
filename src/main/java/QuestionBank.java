@@ -532,10 +532,15 @@ public class QuestionBank {
 
 
     public static String fixHTMLforQTI21(String text, String context) {
+        //text = removeEmptyHTMLTag("caption", text, context);
+        //text = removeEmptyHTMLTag("thead", text, context);
+        //text = removeEmptyHTMLTag("tbody", text, context);
+        text = removeEmptyHTMLTag("table", text, context);
         text = text.replace("<u>", "<b>").replace("</u>", "</b>");
         text = removeOuterTagNesting("p", "p", text, context);
         text = removeOuterTagNesting("p", "ol", text, context);
         text = removeOuterTagNesting("p", "ul", text, context);
+        text = removeOuterTagNesting("span", "ul", text, context);
         text = removeOuterTagNesting("p", "div", text, context);
         text = removeInnerTagNesting("i", "p", text, context);
         text = removeInnerTagNesting("b", "p", text, context);
@@ -596,6 +601,9 @@ public class QuestionBank {
         text = removeHTMLAttributeFromTag("type", "ul", text, context, false);
         text = removeHTMLTagKeepContent("a href=\"mailto", text, context);
         text = removeHTMLTagWithContent("iframe", text, context);
+
+        // from BPM
+        text = removeHTMLTagWithContent("ins", text, context);
 
         text = text.replace("<p></p>", "<br/><br/>");
         text = removeInnerTagNesting("pre", "br", text.replace("<br/>", "<br/>\n"), context);
@@ -733,6 +741,34 @@ public class QuestionBank {
                 first = false;
             }
             text = text.substring(0, nextOpen) + text.substring(endClose);
+            lcText = text.toLowerCase();
+        }
+        return text;
+    }
+
+    public static String removeEmptyHTMLTag(String tag, String text, String context) {
+        String plainTag = tag.split(" ")[0];
+        int nextOpen = 0;
+        String lcText = text.toLowerCase();
+        while (0 <= (nextOpen = findNextOpenTag(tag, lcText, nextOpen))) {
+            int endClose = findSelfClosingEnd(lcText, nextOpen);
+            if (endClose < 0) {
+                int endOpen = text.indexOf('>', nextOpen) + 1;
+                endClose = findMatchingClosingTagIndex(plainTag, lcText, nextOpen);
+                if (endClose < 0 || endOpen < 0) {
+                    SLF4J.LOGGER.error("Cannot remove tag <{}> from '{}' in '{}'", tag, text, context);
+                    return text;
+                } else {
+                    String innerText = text.substring(endOpen, endClose - 3 - plainTag.length());
+                    if (innerText.trim().isEmpty()) {
+                        text = text.substring(0, nextOpen) + text.substring(endClose);
+                    } else {
+                        nextOpen = endClose;
+                    }
+                }
+            } else {
+                text = text.substring(0, nextOpen) + text.substring(endClose);
+            }
             lcText = text.toLowerCase();
         }
         return text;

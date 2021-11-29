@@ -237,8 +237,8 @@ public class Question {
         xmlWriter.writeAttribute("identifier", "SCORE");
         xmlWriter.writeAttribute("cardinality", "single");
         xmlWriter.writeAttribute("baseType", "float");
-        xmlWriter.writeAttribute("normalMinimum", "0.0");
-        xmlWriter.writeAttribute("normalMaximum", String.valueOf(this.defaultGrade));
+        xmlWriter.writeAttribute("normalMinimum", "0");
+        xmlWriter.writeAttribute("normalMaximum", String.valueOf((int)(this.defaultGrade+0.99)));
     }
 
     public void exportQTI21FeedbackOutcomeDeclaration(XMLWriter xmlWriter) throws XMLStreamException {

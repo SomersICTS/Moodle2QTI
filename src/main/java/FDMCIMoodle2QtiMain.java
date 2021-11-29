@@ -5,13 +5,15 @@ import java.io.File;
 public class FDMCIMoodle2QtiMain {
 
     private static final String[] MOODLE_SOURCES = {
+            "data/ADS-20211108-1319.xml",
+            // "data/BPM-20211015-1854.xml",
             // "data/BUS-20210429-1347.xml",
             // "data/ITSM-20210429-1322.xml",
             // "data/se1_q.xml",
             // "data/ESKE-20210525-1421.xml",
-            "data/ESKN-DT-20210628-1729.xml",
+            // "data/ESKN-DT-20210628-1729.xml",
+            // "data/PRO-20210823-1833.xml",
             // "data/INFRA-20210122-1114.xml",
-            // "data/ADS-20210122-1158.xml",
             // "data/WEF-20210107.xml",
             // "data/DB2-20200730.xml",
             // "data/DB-top-20201217.xml",
