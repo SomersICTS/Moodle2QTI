@@ -755,7 +755,7 @@ public class QuestionBank {
             if (endClose < 0) {
                 int endOpen = text.indexOf('>', nextOpen) + 1;
                 endClose = findMatchingClosingTagIndex(plainTag, lcText, nextOpen);
-                if (endClose < 0 || endOpen < 0) {
+                if (endClose < 0 || endOpen <= 0) {
                     SLF4J.LOGGER.error("Cannot remove tag <{}> from '{}' in '{}'", tag, text, context);
                     return text;
                 } else {

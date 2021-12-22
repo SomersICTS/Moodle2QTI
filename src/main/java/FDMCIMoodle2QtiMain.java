@@ -5,7 +5,8 @@ import java.io.File;
 public class FDMCIMoodle2QtiMain {
 
     private static final String[] MOODLE_SOURCES = {
-            "data/ADS-20211108-1319.xml",
+            "data/WEF-20211222-1348.xml",
+            // "data/ADS-20211108-1319.xml",
             // "data/BPM-20211015-1854.xml",
             // "data/BUS-20210429-1347.xml",
             // "data/ITSM-20210429-1322.xml",
