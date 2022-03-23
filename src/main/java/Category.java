@@ -16,7 +16,10 @@ public class Category {
     private long id;
 
     public double getDefaultMark() {
-        return defaultMark;
+        if (defaultMark == 0.0 && parent != null)
+            return parent.getDefaultMark();
+        else
+            return defaultMark;
     }
 
     private double defaultMark = 0.0;

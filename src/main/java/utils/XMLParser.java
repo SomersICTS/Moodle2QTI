@@ -4,6 +4,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public class XMLParser extends StreamReaderDelegate {
@@ -18,6 +19,10 @@ public class XMLParser extends StreamReaderDelegate {
         super(createXMLStreamReader(inputStream));
     }
 
+    public XMLParser(byte[] content) {
+        super(createXMLStreamReader(content));
+    }
+
     public static XMLStreamReader createXMLStreamReader(InputStream input) {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         XMLStreamReader xmlStreamReader = null;
@@ -27,6 +32,11 @@ public class XMLParser extends StreamReaderDelegate {
             SLF4J.logException("Cannot attach XMLStreamReader to file stream content", e);
         }
         return xmlStreamReader;
+    }
+
+    public static XMLStreamReader createXMLStreamReader(byte[] content) {
+        InputStream bais = new ByteArrayInputStream(content);
+        return createXMLStreamReader(bais);
     }
 
     public boolean tryNext() throws XMLStreamException {

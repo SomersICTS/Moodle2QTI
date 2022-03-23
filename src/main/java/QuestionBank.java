@@ -23,6 +23,8 @@ public class QuestionBank {
 
     public static final String QTI_TOOL_NAME = "Testvision Online";
     public static final String QTI_TOOL_VERSION = "41.0.9240";
+    public static final String QTI_TOOL_VENDOR = "Teelen B.V.";
+
 
     public static final String QTI_MC_INTERACTION = "choiceInteraction";
     public static final String QTI_SHORTANSWER_INTERACTION = "extendedTextInteraction";
@@ -35,9 +37,10 @@ public class QuestionBank {
     public static final String TV_TBZONE_CLASS = "rte_zone tveditor1";
     public static final String TV_INTERACTIONBLOCK_CLASS = "interactieblok";
 
-    public static final String XML_DEFAULT_NAMESPACE = "http://www.imsglobal.org/xsd/imscp_v1p1";
-    public static final String XML_QTI_NAMESPACE = "http://www.imsglobal.org/xsd/imsqti_v2p0";
-    public static final String[] MOODLE_STYLE_SHEETS = {"css/from_moodle.css", "css/TvEditor.css"};
+    public static final String XML_IMSCP_NAMESPACE = "http://www.imsglobal.org/xsd/imscp_v1p1";
+    public static final String XML_IMSMD_NAMESPACE = "http://www.imsglobal.org/xsd/imsmd_v1p2";
+    public static final String XML_IMSQTI_NAMESPACE = "http://www.imsglobal.org/xsd/imsqti_v2p1";
+    public static final String[] MOODLE_STYLE_SHEETS = {}; //{"css/from_moodle.css", "css/TvEditor.css"};
 
     Category rootCategory = new Category("", null, this);
     String language = "unknown";
@@ -262,14 +265,17 @@ public class QuestionBank {
 
             exportImages(exportPath + "/" + this.rootCategory.getMediaFilesFolder());
             XMLWriter manifest = new XMLWriter(exportPath + "/imsmanifest.xml");
-            manifest.writeStartDocument();
+            manifest.writeStartDocument("utf-8", "1.0");
+            //manifest.writeStartDocument("utf-8", "1.0\" standalone=\"yes");
             manifest.writeStartElement("manifest");
             manifest.writeAttribute("identifier", "MANIFEST-QTI-1");
-            manifest.writeAttribute("\n\txmlns:xml", "http://www.w3.org/XML/1998/namespace");
+            manifest.writeNamespace("xml", "http://www.w3.org/XML/1998/namespace");
+            //manifest.writeAttribute("\n\txmlns:xml", "http://www.w3.org/XML/1998/namespace");
             //manifest.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imscp_v1p1");
             //manifest.writeAttribute("\n\txmlns:qti", "http://www.imsglobal.org/xsd/imsqti_v2p0");
-            manifest.writeDefaultNamespace(XML_DEFAULT_NAMESPACE);
-            manifest.writeNamespace("qti", XML_QTI_NAMESPACE);
+            manifest.writeDefaultNamespace(XML_IMSCP_NAMESPACE);
+            manifest.writeNamespace("qti", XML_IMSQTI_NAMESPACE);
+            manifest.writeNamespace("xhtml", "http://www.w3.org/XML/1999/xhtml");
             manifest.writeEmptyElement("organisations");
             manifest.writeStartElement("resources");
             this.rootCategory.exportQTI21(manifest, exportPath);
@@ -1141,7 +1147,12 @@ public class QuestionBank {
     public static String deEscape(String s) {
         int backSlash = s.indexOf('\\');
         while (backSlash >= 0 && backSlash < s.length() - 1) {
-            s = s.substring(0, backSlash) + s.substring(backSlash + 1);
+            char escapedChar = s.charAt(backSlash+1);
+            if (escapedChar == '*' || escapedChar == '\\' || escapedChar == '}' ||
+                escapedChar == '~' || escapedChar == ':' ) {
+                s = s.substring(0, backSlash) + s.substring(backSlash + 1);
+            }
+
             backSlash = s.indexOf('\\', backSlash + 1);
         }
         return s;

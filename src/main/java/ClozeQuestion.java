@@ -306,6 +306,7 @@ public class ClozeQuestion extends Question {
                         ce.getIdText(), ce.type.contains("s"));
                 for (int caIdx = 0; caIdx < ce.answers.size(); caIdx++) {
                     String aText = QuestionBank.deEscapeHTMLEntities(ce.answers.get(caIdx).value);
+                    aText = QuestionBank.deEscape(aText);
                     aText = QuestionBank.fixPlainTextforQTI21(aText);
                     // aText = QuestionBank.countAndFlagInvalidWords(new String[] {"<",">","&"}, aText, this.getPartialName() );
                     iaEntry += String.format("<inlineChoice identifier='%s'>%s</inlineChoice>",

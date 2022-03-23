@@ -141,15 +141,16 @@ public class Question {
         this.fileReferences.clear();
         XMLWriter xmlWriter = new XMLWriter(questionExportPath);
         xmlWriter.writeStartDocument("utf-8", "1.0");
-     //   xmlWriter.writeAttribute("standalone", "yes");
+        //xmlWriter.writeStartDocument("utf-8", "1.0\" standalone=\"yes");
         xmlWriter.writeStartElement("assessmentItem");
         xmlWriter.writeAttribute("identifier", this.getQuestionId());
         xmlWriter.writeAttribute("title", this.name);
         xmlWriter.writeAttribute("timeDependent", "false");
         xmlWriter.writeAttribute("adaptive", "false");
-        //xmlWriter.writeAttribute("toolName", QuestionBank.QTI_TOOL_NAME);
-        //xmlWriter.writeAttribute("toolVersion", QuestionBank.QTI_TOOL_VERSION);
-        xmlWriter.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imsqti_v2p1");
+        xmlWriter.writeAttribute("toolName", QuestionBank.QTI_TOOL_NAME);
+        xmlWriter.writeAttribute("toolVersion", QuestionBank.QTI_TOOL_VERSION);
+        xmlWriter.writeDefaultNamespace(QuestionBank.XML_IMSQTI_NAMESPACE);
+        //xmlWriter.writeAttribute("\n\txmlns", "http://www.imsglobal.org/xsd/imsqti_v2p1");
 
         this.exportQTI21ResponseDeclaration(xmlWriter);
         this.exportQTI21OutcomeDeclaration(xmlWriter);
