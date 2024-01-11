@@ -1,3 +1,5 @@
+package model;
+
 import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;
@@ -58,7 +60,7 @@ public class SAQuestion extends Question {
             String rawValue = a.getText();
             double correctness = a.getCorrectness();
             if (correctness > 0) {
-                if (correctness < Question.PARTIAL_CORRECTNESS) {
+                if (correctness < PARTIAL_CORRECTNESS) {
                     if (firstPartialScore) {
                         SLF4J.LOGGER.warn("Discarded partial score {} of answer '{}' in question '{}'",
                                 correctness, rawValue, this.getPartialName());

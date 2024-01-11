@@ -6,8 +6,8 @@ The converter does not convert quizzes themselves from Moodle to Testvision, onl
 ###use
 1. Export your question bank into the moodle .xml format (including context and subcategories as you wish)
 2. Copy the .xml file into the src/main/resources folder
-3. Edit FDMCIMoodle2QtiMain to include your file name into the MOODLE_SOURCES list (you can convert multiple sources in one run)
-4. (Build clean and) Run FDMCIMoodle2QtiMain
+3. Edit cli.FDMCIMoodle2QtiMain to include your file name into the MOODLE_SOURCES list (you can convert multiple sources in one run)
+4. (Build clean and) Run cli.FDMCIMoodle2QtiMain
 5. Review the log of the conversion in the console output
    You can set the logging level in the Run Configuration of intellij
    -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR

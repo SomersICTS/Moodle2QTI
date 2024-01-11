@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.Region?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.Moodle2QtiController">
+    <fx:define>
+        <FXCollections fx:id="fileTypes" fx:factory="observableArrayList">
+            <String fx:value="-- choose --"/>
+            <String fx:value="moodleXML"/>
+            <String fx:value="qti2.1"/>
+        </FXCollections>
+    </fx:define>
+    <fx:define> <Region fx:id="usePrefSize" fx:constant="USE_PREF_SIZE" /> </fx:define>
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+    <HBox>
+        <Label>Source type: </Label>
+        <ChoiceBox fx:id="sourceType" prefWidth="125.0" value="-- choose --">
+            <items><fx:reference source="fileTypes"/></items>
+        </ChoiceBox>
+        <Label>Output type: </Label>
+        <ChoiceBox fx:id="outputType" prefWidth="125.0" value="-- choose --">
+            <items><fx:reference source="fileTypes"/></items>
+        </ChoiceBox>
+    </HBox>
+    <HBox>
+        <Label>Source file: </Label>
+        <Label fx:id="sourceFilePath" minWidth="$usePrefSize" contentDisplay="RIGHT" maxWidth="300"/>
+        <Button text="..." onAction="#onSelectSourceFile"></Button>
+    </HBox>
+    <HBox>
+        <Label>Logging level: </Label>
+        <ChoiceBox fx:id="logLevel" prefWidth="125.0" value="Error">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Trace"/>
+                    <String fx:value="Debug"/>
+                    <String fx:value="Error"/>
+                    <String fx:value="Warning"/>
+                    <String fx:value="Info"/>
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+        <Button text="Start conversion" onAction="#onStartButtonClick"/>
+    </HBox>
+    <TextArea fx:id="messageLog"/>
+</VBox>

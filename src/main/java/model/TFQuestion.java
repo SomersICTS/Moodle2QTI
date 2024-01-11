@@ -1,3 +1,5 @@
+package model;
+
 import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;
@@ -31,7 +33,7 @@ public class TFQuestion extends SAQuestion {
         xmlWriter.writeAttribute("baseType", "identifier");
         xmlWriter.writeStartElement("correctResponse");
         for (Answer a: this.answers) {
-            if (a.getCorrectness() >= Question.PARTIAL_CORRECTNESS) {
+            if (a.getCorrectness() >= PARTIAL_CORRECTNESS) {
                 xmlWriter.writeStartElement("value");
                 xmlWriter.writeCharacters(a.getId());
                 xmlWriter.writeEndElement();

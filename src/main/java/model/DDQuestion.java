@@ -1,3 +1,5 @@
+package model;
+
 import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;

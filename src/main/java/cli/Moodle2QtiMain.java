@@ -1,11 +1,14 @@
+package cli;
+
+import model.*;
 import utils.SLF4J;
 
 import java.io.File;
 
-public class FDMCIMoodle2QtiMain {
+public class Moodle2QtiMain {
 
     private static final String[] MOODLE_SOURCES = {
-            // "data/DB2-20220119-1718.xml",
+            "data/DB2-20220119-1718.xml",
             // "data/WEF-20211222-1442.xml",
             // "data/ADS-20211225-1353.xml",
             // "data/BPM-20211015-1854.xml",
@@ -20,14 +23,14 @@ public class FDMCIMoodle2QtiMain {
             // "data/DB-20201014-a.xml", "data/DB-20201014-b.xml",
             // "data/OOAD-20200815.xml",
             // "data/DS-20200731.xml",
-            "data/WTE-20220322-1520.xml"
+            // "data/WTE-20220322-1520.xml"
     };
     public static void main(String[] args) {
 
         // load the simulation configuration with open and closing times
         // and products and customers
 
-        String inputFormat = "moodleXml";
+        String inputFormat = "moodleXML";
         String outputFormat = "qti2.1";
 
         for (int aIdx = 0; aIdx < args.length; aIdx++) {
@@ -60,7 +63,7 @@ public class FDMCIMoodle2QtiMain {
             questionBank.showSummary();
 
             SLF4J.LOGGER.info("Starting {}-export of questionbank '{}'...", outputFormat, exportName);
-            questionBank.export(outputFormat, exportName);
+            questionBank.exportToResource(outputFormat, exportName);
         }
     }
 }

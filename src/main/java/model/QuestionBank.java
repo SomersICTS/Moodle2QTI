@@ -1,3 +1,5 @@
+package model;
+
 import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;
@@ -5,6 +7,7 @@ import utils.XMLWriter;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,12 +17,17 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import static utils.PathUtils.findFileInFolderTree;
+import static utils.PathUtils.removeFileExtension;
 
 public class QuestionBank {
 
     public static final String QTI_DEFAULTS = "qti21_defaults";
     public static final String QTI_MEDIAFILES = "mediafiles";
+    public static final String QTI_MANIFEST = "imsmanifest.xml";
 
     public static final String QTI_TOOL_NAME = "Testvision Online";
     public static final String QTI_TOOL_VERSION = "41.0.9240";
@@ -67,15 +75,32 @@ public class QuestionBank {
         return images;
     }
 
-    public static QuestionBank load(InputStream input, String format) {
+    public static QuestionBank load(String inputPath, String format) {
         QuestionBank questionBank = new QuestionBank();
+        XMLParser xmlParser = null;
 
-        switch (format) {
-            case "moodleXML":
-                XMLParser xmlParser = new XMLParser(input);
-                questionBank.parseFromMXML(xmlParser);
-            default:
-                SLF4J.LOGGER.error("Unknown inport format: {}", format);
+        try {
+            switch (format) {
+                case "moodleXML":
+                    xmlParser = new XMLParser(new FileInputStream(inputPath));
+                    questionBank.parseFromMXML(xmlParser);
+                    break;
+                case "qti2.1":
+                    String inputFolderPath = removeFileExtension(inputPath) + "_folder";
+                    unzip(inputPath, inputFolderPath);
+                    File manifest = findFileInFolderTree(QTI_MANIFEST, new File(inputFolderPath));
+                    if (manifest == null)
+                        SLF4J.LOGGER.error("Cannot find {} in {}", QTI_MANIFEST, inputFolderPath);
+                    else {
+                        xmlParser = new XMLParser(new FileInputStream(manifest));
+                        questionBank.parseFromQXML(xmlParser, manifest.getParentFile());
+                    }
+                    break;
+                default:
+                    SLF4J.LOGGER.error("Unknown import format: {}", format);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         return questionBank;
     }
@@ -167,8 +192,7 @@ public class QuestionBank {
         String info = parseFormattedElementFromMXML(xmlParser, "info", fullName);
         int id = xmlParser.acceptOptionalElementValue("idnumber", 0);
         if (fullName != null) {
-            String[] path = fullName.replace("//", "+").split("/");
-            Category category = this.rootCategory.findOrCreate(path);
+            Category category = this.rootCategory.findOrCreate(fullName);
             category.setInfo(info);
             category.setId(id);
             return category;
@@ -176,6 +200,47 @@ public class QuestionBank {
         return null;
     }
 
+    private void parseFromQXML(XMLParser xmlParser, File rootFolder) {
+        try {
+            xmlParser.nextTag();
+            xmlParser.require(XMLStreamConstants.START_ELEMENT, null, "resources");
+            xmlParser.nextTag();
+
+            while (xmlParser.nextBeginTag("resource")) {
+                String questionId = xmlParser.getAttributeValue(null, "identifier");
+                String questionPath = xmlParser.getAttributeValue(null, "href");
+                xmlParser.nextTag();
+
+                Category category = this.rootCategory;
+                int lastSlash = questionId.lastIndexOf('/');
+                if (lastSlash > 0) {
+                    category = this.rootCategory.findOrCreate(questionId.substring(0,lastSlash));
+                }
+
+                XMLParser qParser = new XMLParser(new FileInputStream(rootFolder.getPath() + File.separator + questionId));
+                this.questions.add(loadQuestionFromQXML(qParser));
+
+                xmlParser.findAndAcceptEndTag("resource");
+            }
+
+        } catch (Exception ex) {
+            SLF4J.logException("XML input error:", ex);
+        }
+
+        this.rootCategory = this.rootCategory.findNewRoot();
+        this.rootCategory.setParent(null);
+        this.rootCategory.sortContent();
+    }
+
+    public static Question loadQuestionFromQXML(XMLParser xmlParser) throws XMLStreamException {
+        xmlParser.nextTag();
+        xmlParser.require(XMLStreamConstants.START_ELEMENT, null, "assessmentItem");
+        String questionId = xmlParser.getAttributeValue(null, "identifier");
+        String questionTitla = xmlParser.getAttributeValue(null, "title");
+        xmlParser.nextTag();
+
+        return null;
+    }
     public static String countsToString(Map<String, int[]> scoresCounts) {
         String result = "{";
         String separator = "";
@@ -246,19 +311,30 @@ public class QuestionBank {
         }
     }
 
-    public void export(String format, String exportName) {
-        this.setLanguage();
-        exportToQTI21Resource(exportName);
+    public void exportToResource(String format, String exportName) {
+        String exportPathBase = this.resolveResourcePath(exportName);
+        this.export(format, exportPathBase);
     }
 
-    public void exportToQTI21Resource(String resourceName) {
+    public void export(String format, String exportPathBase) {
+        this.setLanguage();
+        switch (format) {
+            case "qti2.1":
+                exportToQTI21Archive(exportPathBase + "_qti");
+                break;
+            case "moodleXML":
+                break;
+            default:
+                SLF4J.LOGGER.error("\nUnknown export format: {} ", format);
+        }
+    }
+    public void exportToQTI21Archive(String exportPath) {
 
-        System.out.printf("Exporting into '%s' (%s) ...\n", resourceName, this.language);
+        System.out.printf("Exporting into '%s' (%s) ...\n", exportPath, this.language);
         nextTextBlockId = TV_FIRST_TEXTBLOCK_ID;
 
         try {
             String defaultsPath = this.resolveResourcePath(QTI_DEFAULTS);
-            String exportPath = this.resolveResourcePath(resourceName);
             Files.createDirectories(Paths.get(exportPath));
             deleteDirectory(new File(exportPath));
             copyDirectoryRecursively(defaultsPath, exportPath);
@@ -357,9 +433,52 @@ public class QuestionBank {
         zos.closeEntry();
     }
 
+    private static void unzip(String zipFilePath, String destDir) {
+        File dir = new File(destDir);
+        // create output directory if it doesn't exist
+        if (dir.exists()) dir.delete();
+        dir.mkdirs();
+
+        FileInputStream fis;
+        //buffer for read and write data to file
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(zipFilePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipEntry ze = zis.getNextEntry();
+            while(ze != null){
+                String fileName = ze.getName();
+                File newFile = new File(destDir + File.separator + fileName);
+                SLF4J.LOGGER.trace("Unzipping to {}", newFile.getAbsolutePath());
+                if (ze.isDirectory()) {
+                    newFile.mkdirs();
+                } else {
+                    //create directories for sub directories in zip
+                    new File(newFile.getParent()).mkdirs();
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                //close this ZipEntry
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+            }
+            //close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String resolveResourcePath(String resourceName) {
-        Path resources = Paths.get(this.getClass().getResource("/").getPath());
-        return resources.toAbsolutePath() + "/" + resourceName;
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL url = classLoader.getResource(resourceName);
+        return url.getPath();
     }
 
     private void exportImages(String exportPath) {

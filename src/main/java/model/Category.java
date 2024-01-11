@@ -1,3 +1,5 @@
+package model;
+
 import utils.SLF4J;
 import utils.XMLWriter;
 
@@ -46,6 +48,21 @@ public class Category {
 
     public void add(Question question) {
         this.questions.add(question);
+    }
+
+    public Category findOrCreate(String fullName) {
+        String[] path = fullName.replace("//", "+").split("/");
+        Category parent = this;
+        for (String n : path) {
+            Category child = parent.subCategories.stream()
+                    .filter(c -> c.name.equals(n))
+                    .findFirst().orElse(null);
+            if (child == null) {
+                child = new Category(n, parent, parent.getQuestionBank());
+            }
+            parent = child;
+        }
+        return parent;
     }
 
     public Category findOrCreate(String[] path) {

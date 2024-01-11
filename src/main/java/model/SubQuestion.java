@@ -1,3 +1,5 @@
+package model;
+
 import utils.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
